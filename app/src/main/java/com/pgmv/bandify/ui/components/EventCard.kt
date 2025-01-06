@@ -36,7 +36,7 @@ fun EventCard(
  ) {
      Column(modifier = Modifier
          .fillMaxWidth()
-         .padding(16.dp),
+         .padding(vertical = 16.dp, horizontal = 24.dp),
          verticalArrangement = Arrangement.spacedBy(8.dp)) {
          Column {
              Text(
