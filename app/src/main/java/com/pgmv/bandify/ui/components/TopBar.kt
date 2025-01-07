@@ -34,7 +34,7 @@ import com.pgmv.bandify.R
 @Composable
 fun TopBar(
     screenTitle: String,
-    isHomeScreen: Boolean,) {
+    isHomeScreen: Boolean) {
 
     val bandName = "Banda Som e Louvor"
 
@@ -44,6 +44,16 @@ fun TopBar(
                 modifier = Modifier
                     .fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically) {
+
+                if (isHomeScreen){
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_bandify),
+                        contentDescription = "Band Logo",
+                        modifier = Modifier
+                            .size(26.dp)
+                    )
+                }
+
                 Text(
                     text = if (isHomeScreen) "Bandify" else screenTitle,
                     fontSize = 22.sp,
