@@ -5,8 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun RepertorioScreen(setScreenTitle: (String) -> Unit) {
-    setScreenTitle("Repertório")
+fun RepertorioScreen() {
     Text(text = "Repertório Screen")
 }
 
@@ -15,5 +14,5 @@ fun RepertorioScreen(setScreenTitle: (String) -> Unit) {
     showSystemUi = true)
 @Composable
 fun RepertorioScreenPreview() {
-    RepertorioScreen(setScreenTitle = {})
+    RepertorioScreen()
 }

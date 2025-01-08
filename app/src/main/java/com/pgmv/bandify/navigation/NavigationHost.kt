@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+import com.pgmv.bandify.navigation.utils.getScreenTitle
 import com.pgmv.bandify.ui.screen.AgendaScreen
 import com.pgmv.bandify.ui.screen.ArquivosScreen
 import com.pgmv.bandify.ui.screen.HomeScreen
@@ -17,7 +18,8 @@ import com.pgmv.bandify.ui.screen.RepertorioScreen
 @OptIn(ExperimentalAnimationApi::class)
 private fun NavGraphBuilder.addScreen(
     route: String,
-    setIsHomeScreen: (Boolean) -> Unit,
+    setScreenTitle: (String) -> Unit,
+    setHomeScreen: (Boolean) -> Unit,
     content: @Composable () -> Unit
 ) {
     composable(
@@ -27,7 +29,8 @@ private fun NavGraphBuilder.addScreen(
         popEnterTransition = { fadeIn() },
         popExitTransition = { fadeOut() }
     ) {
-        setIsHomeScreen(route == "home")
+        setScreenTitle(getScreenTitle(route))
+        setHomeScreen(route == "home")
         content()
     }
 }
@@ -37,23 +40,23 @@ private fun NavGraphBuilder.addScreen(
 fun NavigationHost(
     navController: NavHostController,
     setScreenTitle: (String) -> Unit,
-    setIsHomeScreen: (Boolean) -> Unit
+    setHomeScreen: (Boolean) -> Unit
 ) {
     AnimatedNavHost(navController = navController, startDestination = "home") {
-        addScreen("home", setIsHomeScreen) {
-            HomeScreen(setScreenTitle)
+        addScreen("home", setScreenTitle, setHomeScreen) {
+            HomeScreen()
         }
-        addScreen("agenda", setIsHomeScreen) {
-            AgendaScreen(setScreenTitle)
+        addScreen("agenda", setScreenTitle, setHomeScreen) {
+            AgendaScreen()
         }
-        addScreen("repertório", setIsHomeScreen) {
-            RepertorioScreen(setScreenTitle)
+        addScreen("repertório", setScreenTitle, setHomeScreen) {
+            RepertorioScreen()
         }
-        addScreen("arquivos", setIsHomeScreen) {
-            ArquivosScreen(setScreenTitle)
+        addScreen("arquivos", setScreenTitle, setHomeScreen) {
+            ArquivosScreen()
         }
-        addScreen("perfil", setIsHomeScreen) {
-            PerfilScreen(setScreenTitle)
+        addScreen("perfil", setScreenTitle, setHomeScreen) {
+            PerfilScreen()
         }
     }
 }

@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ArquivosScreen(setScreenTitle: (String) -> Unit) {
-    setScreenTitle("Arquivos")
+fun ArquivosScreen() {
+
     Text(text = "Arquivos Screen")
 }
 
@@ -15,5 +15,5 @@ fun ArquivosScreen(setScreenTitle: (String) -> Unit) {
     showSystemUi = true)
 @Composable
 fun ArquivoScreenPreview() {
-    ArquivosScreen(setScreenTitle = {})
+    ArquivosScreen()
 }

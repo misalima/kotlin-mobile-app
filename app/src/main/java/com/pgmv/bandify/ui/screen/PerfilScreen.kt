@@ -5,8 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PerfilScreen(setScreenTitle: (String) -> Unit) {
-    setScreenTitle("Perfil")
+fun PerfilScreen() {
     Text(text = "Perfil Screen")
 }
 
@@ -15,5 +14,5 @@ fun PerfilScreen(setScreenTitle: (String) -> Unit) {
     showSystemUi = true)
 @Composable
 fun PerfilScreenPreview() {
-    PerfilScreen(setScreenTitle = {})
+    PerfilScreen()
 }

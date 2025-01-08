@@ -5,8 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun HomeScreen(setScreenTitle: (String) -> Unit) {
-    setScreenTitle("Home")
+fun HomeScreen() {
     Text(text = "Home Screen")
 }
 
@@ -15,5 +14,5 @@ fun HomeScreen(setScreenTitle: (String) -> Unit) {
     showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(setScreenTitle = {})
+    HomeScreen()
 }
