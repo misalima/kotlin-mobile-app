@@ -9,11 +9,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.UploadFile
@@ -31,11 +28,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun BottomBar() {
+fun BottomBar(navController: NavController) {
     var selectedIndex by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Home", "Calendário", "Repertório", "Arquivos", "Perfil")
+    val tabs = listOf("Home", "Agenda", "Repertório", "Arquivos", "Perfil")
     val icons = listOf(
         Icons.Default.Home,
         Icons.Default.DateRange,
@@ -58,7 +57,16 @@ fun BottomBar() {
 
             Tab(
                 selected = selectedIndex == index,
-                onClick = { selectedIndex = index }
+                onClick = {
+                    selectedIndex = index
+                    navController.navigate(tab){
+                        popUpTo(navController.graph.startDestinationId){
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
             ) {
                 Icon(
                     imageVector = icons[index],
@@ -85,5 +93,5 @@ fun BottomBar() {
 @Composable
 @Preview
 fun BottomBarPreview() {
-    BottomBar()
+    BottomBar(rememberNavController())
 }
