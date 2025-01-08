@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pgmv.bandify.R
+import com.pgmv.bandify.ui.theme.BandifyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +59,7 @@ fun TopBar(
                 Text(
                     text = if (isHomeScreen) "Bandify" else screenTitle,
                     fontSize = 22.sp,
-                    color = Color(0xFFFFC436),
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier
                         .padding(start = 6.dp)
                         .weight(1f)
@@ -101,12 +103,14 @@ fun TopBar(
         },
         modifier = Modifier.height(64.dp),
         colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = Color(0xFF011535))
+            containerColor = MaterialTheme.colorScheme.primary)
     )
 }
 
 @Preview
 @Composable
 fun TopBarPreview() {
-    TopBar("Repertório", false)
+    BandifyTheme {
+        TopBar("Repertório", false)
+    }
 }
