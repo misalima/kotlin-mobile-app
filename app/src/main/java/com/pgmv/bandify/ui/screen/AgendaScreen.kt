@@ -102,10 +102,10 @@ fun AgendaScreen() {
 
         EventCard(
             id = "1",
-            title = "Evento 1",
+            title = "XI Congresso de Jovens e Adolescentes",
             time = "HH:MM",
             place = "Local do Evento",
-            address = "Rua tal, numero tal"
+            address = "Av. Antônio Custódio Pôrto, São Sebastião - AL, 57275-000"
         )
     }
 }

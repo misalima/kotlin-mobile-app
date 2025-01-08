@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.pgmv.bandify.ui.theme.BandifyTheme
 
 @Composable
 fun BottomBar(navController: NavController) {
@@ -46,7 +48,7 @@ fun BottomBar(navController: NavController) {
     TabRow(
         modifier = Modifier.height(52.dp),
         selectedTabIndex = selectedIndex,
-        containerColor = Color(0xFF011535),
+        containerColor = MaterialTheme.colorScheme.primary,
         divider = {},
         indicator = {}
     ) {
@@ -71,7 +73,7 @@ fun BottomBar(navController: NavController) {
                 Icon(
                     imageVector = icons[index],
                     contentDescription = tab,
-                    tint = if (selectedIndex == index) Color.White else Color(0xFFFFC436),
+                    tint = if (selectedIndex == index) Color.White else MaterialTheme.colorScheme.secondary,
                     modifier = Modifier
                         .size(24.dp)
                         .offset{ IntOffset(0, iconOffset.roundToPx()) }
@@ -93,5 +95,7 @@ fun BottomBar(navController: NavController) {
 @Composable
 @Preview
 fun BottomBarPreview() {
-    BottomBar(rememberNavController())
+    BandifyTheme {
+        BottomBar(rememberNavController())
+    }
 }
