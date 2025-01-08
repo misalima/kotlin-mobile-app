@@ -34,11 +34,11 @@ import com.pgmv.bandify.utils.getCurrentTime
 ])
 data class ActivityHistory(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
-    val userId: Long,
+    @ColumnInfo("user_id") val userId: Long,
     val activity: String,
     @ColumnInfo("activity_type") val activityType: String,
     @ColumnInfo("created_at") val createdAt: String = getCurrentTime(),
-    val songId: Long?,
-    val eventId: Long?,
-    val fileId: Long?
+    @ColumnInfo("song_id") val songId: Long?,
+    @ColumnInfo("event_id") val eventId: Long?,
+    @ColumnInfo("file_id") val fileId: Long?
 )
