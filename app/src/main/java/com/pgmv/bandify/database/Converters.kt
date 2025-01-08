@@ -1,16 +1,20 @@
 package com.pgmv.bandify.database
 
 import androidx.room.TypeConverter
-import java.time.LocalDateTime
 
 class Converters {
+
+    private val delimiter = ","
+
+    // Converts List<String> to a String
     @TypeConverter
-    fun fromString(value: String?): LocalDateTime? {
-        return value?.let { LocalDateTime.parse(it) }
+    fun fromListToString(list: List<String>?): String? {
+        return list?.joinToString(delimiter)
     }
 
+    // Converts String back to List<String>
     @TypeConverter
-    fun dateToString(date: LocalDateTime?): String? {
-        return date?.toString()  // ISO-8601 format
+    fun fromStringToList(value: String?): List<String>? {
+        return value?.split(delimiter)
     }
 }

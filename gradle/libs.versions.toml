@@ -19,6 +19,7 @@ room = "2.6.1"
 ksp = "2.0.21-1.0.28"
 
 [libraries]
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation" }
