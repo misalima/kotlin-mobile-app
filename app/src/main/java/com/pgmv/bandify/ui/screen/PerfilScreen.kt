@@ -1,0 +1,19 @@
+package com.pgmv.bandify.ui.screen
+
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+
+@Composable
+fun PerfilScreen(setScreenTitle: (String) -> Unit) {
+    setScreenTitle("Perfil")
+    Text(text = "Perfil Screen")
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true)
+@Composable
+fun PerfilScreenPreview() {
+    PerfilScreen(setScreenTitle = {})
+}
