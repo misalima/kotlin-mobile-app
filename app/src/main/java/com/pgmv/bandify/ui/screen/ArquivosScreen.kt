@@ -15,7 +15,10 @@ import com.pgmv.bandify.domain.File
 import com.pgmv.bandify.ui.theme.BandifyTheme
 
 @Composable
-fun ArquivosScreen() {
+fun ArquivosScreen(dbHelper: DatabaseHelper? = null) {
+    val fileDao = dbHelper?.fileDao()
+    // fileDao now can be used for database operations
+
    Text(text = "Arquivos")
 }
 

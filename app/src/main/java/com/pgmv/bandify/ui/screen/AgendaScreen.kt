@@ -25,6 +25,7 @@ import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.daysOfWeek
+import com.pgmv.bandify.database.DatabaseHelper
 import com.pgmv.bandify.ui.components.Day
 import com.pgmv.bandify.ui.components.DaysOfWeekTitle
 import com.pgmv.bandify.ui.components.EventCard
@@ -35,7 +36,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
-fun AgendaScreen() {
+fun AgendaScreen(dbHelper: DatabaseHelper? = null) {
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(12) } // Adjust as needed
     val endMonth = remember { currentMonth.plusMonths(24) } // Adjust as needed

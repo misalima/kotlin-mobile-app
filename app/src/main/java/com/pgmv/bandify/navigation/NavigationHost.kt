@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+import com.pgmv.bandify.database.DatabaseHelper
 import com.pgmv.bandify.navigation.utils.getScreenTitle
 import com.pgmv.bandify.ui.screen.AgendaScreen
 import com.pgmv.bandify.ui.screen.ArquivosScreen
@@ -40,23 +41,24 @@ private fun NavGraphBuilder.addScreen(
 fun NavigationHost(
     navController: NavHostController,
     setScreenTitle: (String) -> Unit,
-    setHomeScreen: (Boolean) -> Unit
+    setHomeScreen: (Boolean) -> Unit,
+    dbHelper: DatabaseHelper
 ) {
     AnimatedNavHost(navController = navController, startDestination = "home") {
         addScreen("home", setScreenTitle, setHomeScreen) {
-            HomeScreen()
+            HomeScreen(dbHelper)
         }
         addScreen("agenda", setScreenTitle, setHomeScreen) {
-            AgendaScreen()
+            AgendaScreen(dbHelper)
         }
         addScreen("repertório", setScreenTitle, setHomeScreen) {
-            RepertorioScreen()
+            RepertorioScreen(dbHelper)
         }
         addScreen("arquivos", setScreenTitle, setHomeScreen) {
-            ArquivosScreen()
+            ArquivosScreen(dbHelper)
         }
         addScreen("perfil", setScreenTitle, setHomeScreen) {
-            PerfilScreen()
+            PerfilScreen(dbHelper)
         }
     }
 }
