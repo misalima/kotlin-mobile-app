@@ -4,7 +4,7 @@ accompanistSystemuicontrollerVersion = "0.24.13-rc"
 agp = "8.7.3"
 desugar_jdk_libs_nio = "2.1.4"
 coilCompose = "3.0.4"
-kotlin = "2.0.0"
+kotlin = "2.0.21"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -15,8 +15,13 @@ composeBom = "2024.04.01"
 kizitonwose = "2.6.1"
 materialIconsExtended = "<1.5.0-beta01>"
 navigationCompose = "2.8.5"
+room = "2.6.1"
+ksp = "2.0.21-1.0.28"
 
 [libraries]
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 desugar_jdk_libs_nio-v214 = { module = "com.android.tools:desugar_jdk_libs_nio", version.ref = "desugar_jdk_libs_nio" }
@@ -45,4 +50,6 @@ kizitonwose = { group = "com.kizitonwose.calendar", name = "compose", version.re
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
 
