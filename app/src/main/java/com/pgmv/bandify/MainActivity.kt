@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.pgmv.bandify.database.DatabaseHelper
 import com.pgmv.bandify.navigation.NavigationHost
 import com.pgmv.bandify.ui.components.BottomBar
 import com.pgmv.bandify.ui.components.TopBar
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val dbHelper = DatabaseHelper.getInstance(applicationContext)
             BandifyTheme {
                 val navController = rememberAnimatedNavController()
                 val (screenTitle, setScreenTitle) = remember { mutableStateOf("Home") }
@@ -46,7 +48,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        NavigationHost(navController, setScreenTitle, setIsHomeScreen)
+                        NavigationHost(navController, setScreenTitle, setIsHomeScreen, dbHelper)
                     }
                 }
             }
