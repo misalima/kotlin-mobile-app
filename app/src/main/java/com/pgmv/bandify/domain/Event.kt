@@ -14,7 +14,7 @@ import com.pgmv.bandify.utils.getCurrentTime
         onDelete = ForeignKey.CASCADE
     )])
 data class Event (
-    @PrimaryKey(autoGenerate = true)val id: Long = 0L,
+    @PrimaryKey(autoGenerate = true)val id: Long = 0,
     val title: String,
     val date: String,
     val time: String,
