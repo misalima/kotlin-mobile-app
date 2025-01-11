@@ -20,7 +20,7 @@ data class Event (
     val time: String,
     val place: String,
     val address: String,
-    val userId: Long,
+    @ColumnInfo("user_id") val userId: Long,
     @ColumnInfo("image_url") val imageUrl: String = "",
     @ColumnInfo("created_at") val createdAt: String = getCurrentTime(),
     @ColumnInfo("updated_at") val updatedAt: String? = null,

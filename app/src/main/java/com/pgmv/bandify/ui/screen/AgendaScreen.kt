@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,13 +32,10 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.pgmv.bandify.database.DatabaseHelper
-import com.pgmv.bandify.domain.Event
-import com.pgmv.bandify.domain.User
 import com.pgmv.bandify.ui.components.Day
 import com.pgmv.bandify.ui.components.DaysOfWeekTitle
 import com.pgmv.bandify.ui.components.EventCard
 import com.pgmv.bandify.ui.components.MonthTitle
-import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -47,52 +43,6 @@ import java.util.Locale
 @Composable
 fun AgendaScreen(dbHelper: DatabaseHelper, navController: NavController) {
     val eventDao = dbHelper.eventDao()
-    val userDao = dbHelper.userDao()
-
-    val fakeUser = User(
-        id = 1,
-        username = "misalima",
-        email = "misael.lima@mail.com",
-        firstName = "Misael",
-        surname = "Lima",
-        password = "12345678",
-        phone = "82988434518",
-        roles = listOf("admin")
-    )
-
-    val userEvents = listOf(
-        Event(
-            title = "XI Congresso de Jovens e Adolescentes",
-            date = LocalDate.of(2025, 1, 2).toString(),
-            time = "19:00",
-            place = "IASD Centro",
-            address = "Av. Antônio Custódio Pôrto, São Sebastião - AL, 57275-000",
-            userId = 1,
-        ),
-        Event(
-            title = "Culto da Paz",
-            date = LocalDate.of(2025, 1, 9).toString(),
-            time = "19:00",
-            place = "IEAD Missão",
-            address = "Rua João da Silva, Centro, Arapiraca - AL, 32344-145",
-            userId = 1,
-        ),
-        Event(
-            title = "VI Aniversário do Departamento",
-            date = LocalDate.of(2025, 1, 20).toString(),
-            time = "18:00",
-            place = "Igreja Sede",
-            address = "Av. Correia dos Santos Alves, Arapiraca - AL, 32344-145",
-            userId = 1,
-        ),
-    )
-
-
-
-    LaunchedEffect(Unit) {
-        userDao.insertUser(fakeUser)
-        userEvents.forEach { eventDao.insertEvent(it) }
-    }
 
     val retrievedEvents = eventDao.getEventsByUserId(1).collectAsState(initial = emptyList()).value
 
