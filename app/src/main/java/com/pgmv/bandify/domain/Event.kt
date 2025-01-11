@@ -10,17 +10,17 @@ import com.pgmv.bandify.utils.getCurrentTime
     foreignKeys = [ForeignKey(
         entity = User::class,
         parentColumns = ["id"],
-        childColumns = ["userId"],
+        childColumns = ["user_id"],
         onDelete = ForeignKey.CASCADE
     )])
 data class Event (
-    @PrimaryKey(autoGenerate = true)val id: Long = 0L,
+    @PrimaryKey(autoGenerate = true)val id: Long = 0,
     val title: String,
     val date: String,
     val time: String,
     val place: String,
     val address: String,
-    val userId: Long,
+    @ColumnInfo("user_id") val userId: Long,
     @ColumnInfo("image_url") val imageUrl: String = "",
     @ColumnInfo("created_at") val createdAt: String = getCurrentTime(),
     @ColumnInfo("updated_at") val updatedAt: String? = null,

@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,13 +31,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.pgmv.bandify.ui.theme.BandifyTheme
 
 @Composable
 fun BottomBar(navController: NavController) {
-    var selectedIndex by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Home", "Agenda", "Repertório", "Arquivos", "Perfil")
+
+    val tabs = listOf("home", "agenda", "repertório", "arquivos", "perfil")
     val icons = listOf(
         Icons.Default.Home,
         Icons.Default.DateRange,
@@ -44,6 +46,12 @@ fun BottomBar(navController: NavController) {
         Icons.Default.UploadFile,
         Icons.Default.AccountCircle
     )
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val selectedIndex = remember(currentRoute) {
+        tabs.indexOf(currentRoute)
+    }
 
     TabRow(
         modifier = Modifier.height(52.dp),
@@ -58,9 +66,8 @@ fun BottomBar(navController: NavController) {
                 label = "Icon Offset Animation")
 
             Tab(
-                selected = selectedIndex == index,
+                selected = tab == currentRoute,
                 onClick = {
-                    selectedIndex = index
                     navController.navigate(tab){
                         popUpTo(navController.graph.startDestinationId){
                             saveState = true

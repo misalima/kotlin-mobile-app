@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.pgmv.bandify.domain.Song
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SongDao {
@@ -21,25 +22,25 @@ interface SongDao {
     suspend fun deleteSong(song: Song)
 
     @Query("SELECT * FROM songs")
-    suspend fun getAllSongs(): List<Song>
+    fun getAllSongs(): Flow<List<Song>>
 
     @Query("SELECT * FROM songs WHERE id = :id LIMIT 1")
     suspend fun getSongById(id: Long): Song?
 
     @Query("SELECT * FROM songs WHERE user_id = :userId")
-    suspend fun getSongsByUserId(userId: Long): List<Song>
+    fun getSongsByUserId(userId: Long): Flow<List<Song>>
 
     @Query("SELECT * FROM songs WHERE title LIKE :title")
-    suspend fun getSongsByTitle(title: String): List<Song>
+    fun getSongsByTitle(title: String): Flow<List<Song>>
 
     @Query("SELECT * FROM songs WHERE artist LIKE :artist")
-    suspend fun getSongsByArtist(artist: String): List<Song>
+    fun getSongsByArtist(artist: String): Flow<List<Song>>
 
     @Query("""
     SELECT s.* FROM songs s
     INNER JOIN event_songs es ON es.song_id = s.id
     WHERE es.event_id = :eventId
 """)
-    suspend fun getSongsForEvent(eventId: Long): List<Song>
+    fun getSongsForEvent(eventId: Long): Flow<List<Song>>
 
 }

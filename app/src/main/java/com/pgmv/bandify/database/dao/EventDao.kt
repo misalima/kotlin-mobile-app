@@ -7,10 +7,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.pgmv.bandify.domain.Event
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EventDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertEvent(event: Event): Long
 
     @Update
@@ -23,13 +24,13 @@ interface EventDao {
     suspend fun deleteAllEvents()
 
     @Query("SELECT * FROM events")
-    suspend fun getAllEvents(): List<Event>
+    fun getAllEvents(): Flow<List<Event>>
 
     @Query("SELECT * FROM events WHERE id = :id LIMIT 1")
     suspend fun getEventById(id: Long): Event?
 
-    @Query("SELECT * FROM events WHERE userId = :userId")
-    suspend fun getEventsByUserId(userId: Long): List<Event>
+    @Query("SELECT * FROM events WHERE user_id = :userId")
+    fun getEventsByUserId(userId: Long): Flow<List<Event>>
 
     @Query("SELECT * FROM events WHERE title LIKE :title")
     suspend fun getEventsByTitle(title: String): List<Event>

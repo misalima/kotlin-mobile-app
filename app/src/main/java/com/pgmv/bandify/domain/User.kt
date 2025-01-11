@@ -7,7 +7,7 @@ import com.pgmv.bandify.utils.getCurrentTime
 
 @Entity(tableName = "users")
 data class User (
-    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val username: String,
     @ColumnInfo("first_name") var firstName: String,
     val surname: String,

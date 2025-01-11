@@ -12,6 +12,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,9 +88,8 @@ fun EventCard(
              )
              Text(text = address, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondary, fontWeight = FontWeight(400))
          }
-         Button(onClick = { /* TODO: Handle button click */ }, modifier = Modifier
-             .align(Alignment.CenterHorizontally)
-             .padding(top = 8.dp)) {
+         TextButton(onClick = { /* TODO: Handle button click */ }, modifier = Modifier
+             .align(Alignment.CenterHorizontally)) {
              Text(text = "ver músicas do evento")
          }
      }
