@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -51,7 +52,7 @@ import java.util.Locale
 import kotlin.properties.Delegates
 
 @Composable
-fun AgendaScreen(dbHelper: DatabaseHelper) {
+fun AgendaScreen(dbHelper: DatabaseHelper, navController: NavController) {
     val eventDao = dbHelper.eventDao()
     val userDao = dbHelper.userDao()
 
@@ -170,24 +171,28 @@ fun AgendaScreen(dbHelper: DatabaseHelper) {
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
         )
 
+        Button(
+            onClick = {
+                navController.navigate("novo_evento")
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Adicionar evento"
+            )
+            Text(
+                text = "Adicionar evento",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
+        Spacer(modifier = Modifier.padding(8.dp))
+
         if (selectedDay.value != null) {
             val selectedDate = selectedDay.value!!.date
             val events = retrievedEvents.filter { it.date == selectedDate.toString() }
-            Button(
-                onClick = { },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Adicionar evento"
-                )
-                Text(
-                    text = "Adicionar evento",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
+
             if (events.isNotEmpty()) {
                 events.forEach {
                     EventCard(

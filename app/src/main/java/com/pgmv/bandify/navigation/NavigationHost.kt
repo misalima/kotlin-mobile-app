@@ -13,6 +13,7 @@ import com.pgmv.bandify.navigation.utils.getScreenTitle
 import com.pgmv.bandify.ui.screen.AgendaScreen
 import com.pgmv.bandify.ui.screen.ArquivosScreen
 import com.pgmv.bandify.ui.screen.HomeScreen
+import com.pgmv.bandify.ui.screen.NovoEventoScreen
 import com.pgmv.bandify.ui.screen.PerfilScreen
 import com.pgmv.bandify.ui.screen.RepertorioScreen
 
@@ -49,16 +50,23 @@ fun NavigationHost(
             HomeScreen(dbHelper)
         }
         addScreen("agenda", setScreenTitle, setHomeScreen) {
-            AgendaScreen(dbHelper)
+            setHomeScreen(true)
+            AgendaScreen(dbHelper, navController)
         }
         addScreen("repertório", setScreenTitle, setHomeScreen) {
+            setHomeScreen(true)
             RepertorioScreen(dbHelper)
         }
         addScreen("arquivos", setScreenTitle, setHomeScreen) {
+            setHomeScreen(true)
             ArquivosScreen(dbHelper)
         }
         addScreen("perfil", setScreenTitle, setHomeScreen) {
+            setHomeScreen(true)
             PerfilScreen(dbHelper)
+        }
+        addScreen("novo_evento", setScreenTitle, setHomeScreen) {
+            NovoEventoScreen(dbHelper = dbHelper)
         }
     }
 }

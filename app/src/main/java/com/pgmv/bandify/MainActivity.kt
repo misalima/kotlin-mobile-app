@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                         TopBar(screenTitle = screenTitle, isHomeScreen = isHomeScreen)
                     },
                     bottomBar = {
-                        BottomBar(navController = navController)
+                        if (isHomeScreen) BottomBar(navController = navController)
                     },
                     modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars)
                 ) { innerPadding ->

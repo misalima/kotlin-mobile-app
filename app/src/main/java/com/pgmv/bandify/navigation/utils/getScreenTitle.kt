@@ -7,6 +7,7 @@ fun getScreenTitle(route: String): String {
         "repertório" -> "Repertório"
         "arquivos" -> "Arquivos"
         "perfil" -> "Perfil"
+        "novo_evento" -> "Adicionar Evento"
         else -> "Bandify"
     }
 }
