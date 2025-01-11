@@ -22,6 +22,7 @@ private fun NavGraphBuilder.addScreen(
     route: String,
     setScreenTitle: (String) -> Unit,
     setHomeScreen: (Boolean) -> Unit,
+    setShowBottomBar: (Boolean) -> Unit,
     content: @Composable () -> Unit
 ) {
     composable(
@@ -33,6 +34,7 @@ private fun NavGraphBuilder.addScreen(
     ) {
         setScreenTitle(getScreenTitle(route))
         setHomeScreen(route == "home")
+        setShowBottomBar(true)
         content()
     }
 }
@@ -43,29 +45,34 @@ fun NavigationHost(
     navController: NavHostController,
     setScreenTitle: (String) -> Unit,
     setHomeScreen: (Boolean) -> Unit,
-    dbHelper: DatabaseHelper
+    dbHelper: DatabaseHelper,
+    setShowBackButton: (Boolean) -> Unit,
+    setShowBottomBar: (Boolean) -> Unit
 ) {
     AnimatedNavHost(navController = navController, startDestination = "home") {
-        addScreen("home", setScreenTitle, setHomeScreen) {
+        addScreen("home", setScreenTitle, setHomeScreen, setShowBottomBar) {
+            setShowBackButton(false)
             HomeScreen(dbHelper)
         }
-        addScreen("agenda", setScreenTitle, setHomeScreen) {
-            setHomeScreen(true)
+        addScreen("agenda", setScreenTitle, setHomeScreen, setShowBottomBar) {
+            setShowBackButton(false)
             AgendaScreen(dbHelper, navController)
         }
-        addScreen("repertório", setScreenTitle, setHomeScreen) {
-            setHomeScreen(true)
+        addScreen("repertório", setScreenTitle, setHomeScreen, setShowBottomBar) {
+            setShowBackButton(false)
             RepertorioScreen(dbHelper)
         }
-        addScreen("arquivos", setScreenTitle, setHomeScreen) {
-            setHomeScreen(true)
+        addScreen("arquivos", setScreenTitle, setHomeScreen, setShowBottomBar) {
+            setShowBackButton(false)
             ArquivosScreen(dbHelper)
         }
-        addScreen("perfil", setScreenTitle, setHomeScreen) {
-            setHomeScreen(true)
+        addScreen("perfil", setScreenTitle, setHomeScreen, setShowBottomBar) {
+            setShowBackButton(false)
             PerfilScreen(dbHelper)
         }
-        addScreen("novo_evento", setScreenTitle, setHomeScreen) {
+        addScreen("novo_evento", setScreenTitle, setHomeScreen, setShowBottomBar) {
+            setShowBottomBar(false)
+            setShowBackButton(true)
             NovoEventoScreen(dbHelper = dbHelper)
         }
     }

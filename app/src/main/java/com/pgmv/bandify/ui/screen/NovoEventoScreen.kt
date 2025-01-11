@@ -22,6 +22,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -31,9 +34,11 @@ import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,11 +48,17 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.pgmv.bandify.database.DatabaseHelper
+import com.pgmv.bandify.database.dao.EventDao
+import com.pgmv.bandify.database.dao.EventSongDao
+import com.pgmv.bandify.domain.Event
+import com.pgmv.bandify.domain.EventSong
 import com.pgmv.bandify.domain.Song
 import com.pgmv.bandify.ui.components.SongsSelectionForEvent
 import com.pgmv.bandify.ui.theme.Blue20
 import com.pgmv.bandify.ui.theme.Grey60
 import com.pgmv.bandify.utils.millisToLocalDate
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -57,33 +68,42 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NovoEventoScreen(dbHelper: DatabaseHelper) {
-    val focusManager = LocalFocusManager.current
-    var showDatePickerDialog by remember {
-        mutableStateOf(false)
-    }
-    var showTimeInput by remember { mutableStateOf(false) }
-    val datePickerState =
-        rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+    val eventDao = dbHelper.eventDao()
+    val eventSongDao = dbHelper.eventSongDao()
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    var selectedTime: TimePickerState? by remember { mutableStateOf(null) }
-    var formattedTime: String by remember { mutableStateOf("Escolha um horário") }
-
-    val formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", Locale("pt", "BR"))
-
+    var selectedTime: String by remember { mutableStateOf("Escolha um horário") }
     var selectedSongs = remember { mutableStateOf(setOf<Song>()) }
+    var title: String by remember { mutableStateOf("") }
+    var place: String by remember { mutableStateOf("") }
+    var address: String by remember { mutableStateOf("") }
+    var titleError by remember { mutableStateOf<String?>(null) }
+    var placeError by remember { mutableStateOf<String?>(null) }
+    var addressError by remember { mutableStateOf<String?>(null) }
+    var timeError by remember { mutableStateOf<String?>(null) }
+
+    val coroutineScope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
+
+
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
+        val focusManager = LocalFocusManager.current
+        val datePickerState =
+            rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+        var showDatePickerDialog by remember { mutableStateOf(false) }
+        var showTimeInput by remember { mutableStateOf(false) }
+        val formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", Locale("pt", "BR"))
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
         ) {
-
-
             if (showDatePickerDialog) {
                 DatePickerDialog(
                     onDismissRequest = {
@@ -94,12 +114,7 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
                             onClick = {
                                 datePickerState
                                     .selectedDateMillis?.let { millis ->
-                                        Log.d("agenda", "selectedDate before: $selectedDate")
                                         selectedDate = millis.millisToLocalDate()
-                                        Log.d(
-                                            "agenda",
-                                            "selectedDate after: $selectedDate \n millis: $millis"
-                                        )
                                     }
                                 showDatePickerDialog = false
                             }) {
@@ -150,11 +165,10 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
 
             Spacer(modifier = Modifier.padding(8.dp))
 
-            if(showTimeInput) {
+            if (showTimeInput) {
                 TimeInputComposable(
                     onConfirm = { time ->
-                        selectedTime = time
-                        formattedTime = String.format("%02d:%02d", time.hour, time.minute)
+                        selectedTime = String.format("%02d:%02d", time.hour, time.minute)
                         showTimeInput = false
                     },
                     onDismiss = {
@@ -165,8 +179,8 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
 
             // TextField para o Horário
             TextField(
-                value = formattedTime,
-                onValueChange = { },
+                value = selectedTime,
+                onValueChange = { timeError = if(selectedTime == "Escolha um horário") "Informe o horário do evento" else null },
                 Modifier
                     .fillMaxWidth()
                     .onFocusEvent {
@@ -198,32 +212,73 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                }
+                },
+                isError = timeError != null
             )
+            if (timeError != null) {
+                Text(
+                    text = timeError!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
 
             Spacer(modifier = Modifier.padding(8.dp))
 
             TextFieldInput(
-                value = "",
-                onValueChange = { /*TODO*/ },
-                label = "Nome do evento"
+                value = title,
+                onValueChange = {
+                    title = it
+                    titleError = if (it.isBlank()) "Informe o nome do evento" else null
+                },
+                label = "Nome do evento",
+                isError = titleError != null
             )
+            if (titleError != null) {
+                Text(
+                    text = titleError!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
 
             Spacer(modifier = Modifier.padding(8.dp))
 
             TextFieldInput(
-                value = "",
-                onValueChange = { /*TODO*/ },
-                label = "Local do evento"
+                value = place,
+                onValueChange = {
+                    place = it
+                    placeError = if (it.isBlank()) "Informe o local do evento" else null
+                },
+                label = "Local do evento",
+                isError = placeError != null
             )
+            if (placeError != null) {
+                Text(
+                    text = placeError!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
 
             Spacer(modifier = Modifier.padding(8.dp))
 
             TextFieldInput(
-                value = "",
-                onValueChange = { /*TODO*/ },
-                label = "Endereço"
+                value = address,
+                onValueChange = {
+                    address = it
+                    addressError = if (it.isBlank()) "Informe o endereço do evento" else null
+                },
+                label = "Endereço",
+                isError = addressError != null
             )
+            if (addressError != null) {
+                Text(
+                    text = addressError!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
 
             Spacer(modifier = Modifier.padding(16.dp))
 
@@ -232,8 +287,56 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
             Spacer(modifier = Modifier.padding(16.dp))
         }
 
+        SnackbarHost(
+            hostState = snackBarHostState,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+
+                titleError = if (title.isBlank()) "Informe o nome do evento" else null
+                placeError = if (place.isBlank()) "Informe o local do evento" else null
+                addressError = if (address.isBlank()) "Informe o endereço do evento" else null
+                timeError = if (selectedTime == "Escolha um horário") "Informe o horário do evento" else null
+
+                if (titleError == null && placeError == null && addressError == null) {
+                    saveEvent(
+                        title = title,
+                        selectedDate = selectedDate,
+                        selectedTime = selectedTime,
+                        place = place,
+                        address = address,
+                        selectedSongs = selectedSongs,
+                        eventDao = eventDao,
+                        eventSongDao = eventSongDao,
+                        coroutineScope = coroutineScope
+                    )
+
+                    title = ""
+                    place = ""
+                    address = ""
+                    selectedSongs.value = setOf()
+                    selectedDate = LocalDate.now()
+                    selectedTime = "Escolha um horário"
+
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = "Evento criado com sucesso!",
+                            actionLabel = "Ok",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                } else {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = "Preencha todos os campos corretamente",
+                            actionLabel = "Ok",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                }
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp)
         ) {
@@ -249,7 +352,12 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
 }
 
 @Composable
-fun TextFieldInput(value: String, onValueChange: (String) -> Unit, label: String) {
+fun TextFieldInput(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    isError: Boolean
+) {
     TextField(
         value = value,
         onValueChange = onValueChange,
@@ -262,8 +370,10 @@ fun TextFieldInput(value: String, onValueChange: (String) -> Unit, label: String
             focusedTextColor = MaterialTheme.colorScheme.primary,
             unfocusedContainerColor = Blue20,
             unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent
-        )
+            focusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent
+        ),
+        isError = isError
     )
 }
 
@@ -285,7 +395,7 @@ fun TimeInputComposable(
         modifier = Modifier.wrapContentHeight(),
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
-        Surface (
+        Surface(
             modifier = Modifier
                 .requiredWidth(360.dp)
                 .heightIn(max = 568.dp),
@@ -313,11 +423,47 @@ fun TimeInputComposable(
             }
         }
     }
-
-
 }
 
+fun saveEvent(
+    title: String,
+    selectedDate: LocalDate,
+    selectedTime: String,
+    place: String,
+    address: String,
+    selectedSongs: MutableState<Set<Song>>,
+    eventDao: EventDao,
+    eventSongDao: EventSongDao,
+    coroutineScope: CoroutineScope
+) {
+    var eventId: Long = 0L
+    coroutineScope.launch {
+        try {
+            eventId = eventDao.insertEvent(
+                Event(
+                    title = title,
+                    date = selectedDate.toString(),
+                    time = selectedTime,
+                    place = place,
+                    address = address,
+                    userId = 1
+                )
+            )
 
+            if (eventId != 0L && selectedSongs.value.isNotEmpty()) {
+                selectedSongs.value.forEach { song ->
+                    eventSongDao.insertEventSong(
+                        EventSong(
+                            eventId, song.id
+                        )
+                    )
+                }
+            }
 
+        } catch (e: Exception) {
+            Log.d("NovoEventoScreen", "Erro ao salvar evento: ${e.message}")
+        }
+    }
+}
 
 

@@ -1,8 +1,6 @@
 package com.pgmv.bandify.ui.screen
 
 
-import android.health.connect.datatypes.units.Length
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,8 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -43,13 +39,10 @@ import com.pgmv.bandify.ui.components.Day
 import com.pgmv.bandify.ui.components.DaysOfWeekTitle
 import com.pgmv.bandify.ui.components.EventCard
 import com.pgmv.bandify.ui.components.MonthTitle
-import com.pgmv.bandify.ui.theme.BandifyTheme
-import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import kotlin.properties.Delegates
 
 @Composable
 fun AgendaScreen(dbHelper: DatabaseHelper, navController: NavController) {

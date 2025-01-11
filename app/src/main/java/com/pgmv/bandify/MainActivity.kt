@@ -33,13 +33,15 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberAnimatedNavController()
                 val (screenTitle, setScreenTitle) = remember { mutableStateOf("Home") }
                 val (isHomeScreen, setIsHomeScreen) = remember { mutableStateOf(true) }
+                val (showBackButton, setShowBackButton) = remember { mutableStateOf(false) }
+                val (showBottomBar, setShowBottomBar) = remember { mutableStateOf(true) }
 
                 Scaffold(
                     topBar = {
-                        TopBar(screenTitle = screenTitle, isHomeScreen = isHomeScreen)
+                        TopBar(screenTitle = screenTitle, isHomeScreen = isHomeScreen, showBackButton = showBackButton, navController = navController)
                     },
                     bottomBar = {
-                        if (isHomeScreen) BottomBar(navController = navController)
+                        if (showBottomBar) BottomBar(navController = navController)
                     },
                     modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars)
                 ) { innerPadding ->
@@ -48,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        NavigationHost(navController, setScreenTitle, setIsHomeScreen, dbHelper)
+                        NavigationHost(navController, setScreenTitle, setIsHomeScreen, dbHelper, setShowBackButton, setShowBottomBar)
                     }
                 }
             }

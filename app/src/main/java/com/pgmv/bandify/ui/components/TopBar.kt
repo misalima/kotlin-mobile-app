@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.pgmv.bandify.R
 import com.pgmv.bandify.ui.theme.BandifyTheme
 
@@ -36,6 +38,8 @@ import com.pgmv.bandify.ui.theme.BandifyTheme
 @Composable
 fun TopBar(
     screenTitle: String,
+    showBackButton: Boolean? = false,
+    navController: NavController? = null,
     isHomeScreen: Boolean) {
 
     val bandName = "Banda Som e Louvor"
@@ -55,6 +59,20 @@ fun TopBar(
                             .size(26.dp)
                     )
                 }
+
+                if(showBackButton == true) {
+                    IconButton(
+                        onClick = { navController?.popBackStack() },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBackIosNew,
+                            contentDescription = "Menu",
+                            tint = Color.White
+                        )
+                    }
+                }
+
 
                 Text(
                     text = if (isHomeScreen) "Bandify" else screenTitle,
@@ -82,6 +100,8 @@ fun TopBar(
                 }
 
                 Spacer(modifier = Modifier.padding(start = 6.dp))
+
+
 
                 Text(
                     text = bandName,
@@ -111,6 +131,9 @@ fun TopBar(
 @Composable
 fun TopBarPreview() {
     BandifyTheme {
-        TopBar("Repertório", false)
+        TopBar(
+            "Repertório", false,
+            isHomeScreen = false,
+        )
     }
 }
