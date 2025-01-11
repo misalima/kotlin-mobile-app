@@ -29,7 +29,7 @@ interface EventDao {
     @Query("SELECT * FROM events WHERE id = :id LIMIT 1")
     suspend fun getEventById(id: Long): Event?
 
-    @Query("SELECT * FROM events WHERE userId = :userId")
+    @Query("SELECT * FROM events WHERE user_id = :userId")
     fun getEventsByUserId(userId: Long): Flow<List<Event>>
 
     @Query("SELECT * FROM events WHERE title LIKE :title")

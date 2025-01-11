@@ -300,7 +300,7 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
                 addressError = if (address.isBlank()) "Informe o endereço do evento" else null
                 timeError = if (selectedTime == "Escolha um horário") "Informe o horário do evento" else null
 
-                if (titleError == null && placeError == null && addressError == null) {
+                if (titleError == null && placeError == null && addressError == null && timeError == null) {
                     saveEvent(
                         title = title,
                         selectedDate = selectedDate,

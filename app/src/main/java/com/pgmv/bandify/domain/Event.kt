@@ -10,7 +10,7 @@ import com.pgmv.bandify.utils.getCurrentTime
     foreignKeys = [ForeignKey(
         entity = User::class,
         parentColumns = ["id"],
-        childColumns = ["userId"],
+        childColumns = ["user_id"],
         onDelete = ForeignKey.CASCADE
     )])
 data class Event (
