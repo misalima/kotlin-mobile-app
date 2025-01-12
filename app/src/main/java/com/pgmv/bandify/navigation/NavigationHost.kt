@@ -52,7 +52,7 @@ fun NavigationHost(
     AnimatedNavHost(navController = navController, startDestination = "home") {
         addScreen("home", setScreenTitle, setHomeScreen, setShowBottomBar) {
             setShowBackButton(false)
-            HomeScreen(dbHelper)
+            HomeScreen(dbHelper, navController)
         }
         addScreen("agenda", setScreenTitle, setHomeScreen, setShowBottomBar) {
             setShowBackButton(false)

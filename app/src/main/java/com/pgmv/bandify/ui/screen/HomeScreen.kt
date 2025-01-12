@@ -1,5 +1,6 @@
 package com.pgmv.bandify.ui.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,11 +11,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.pgmv.bandify.database.DatabaseHelper
 import com.pgmv.bandify.ui.components.HomeActivityCard
 import com.pgmv.bandify.ui.components.HomeEventCard
@@ -23,7 +28,7 @@ import com.pgmv.bandify.ui.theme.Grey60
 import java.time.LocalDate
 
 @Composable
-fun HomeScreen(dbHelper: DatabaseHelper? = null) {
+fun HomeScreen(dbHelper: DatabaseHelper? = null, navController: NavController) {
     val eventDao = dbHelper?.eventDao()
     val activityHistoryDao = dbHelper?.activityHistoryDao()
     val nextFiveEvents = eventDao?.getNextFiveEvents(LocalDate.now().toString(), 1)
@@ -66,6 +71,17 @@ fun HomeScreen(dbHelper: DatabaseHelper? = null) {
                 }
             }
         }
+        TextButton(
+            onClick = { navController.navigate("agenda") {
+                popUpTo("home") { inclusive = true }
+                launchSingleTop = true
+            } },
+            modifier = Modifier.align(Alignment.End),
+        ) {
+            Text(
+                text = "Ir para agenda",
+            )
+        }
         Text(
             text = "Atividades Recentes",
             style = MaterialTheme.typography.titleLarge
@@ -106,20 +122,3 @@ fun HomeScreen(dbHelper: DatabaseHelper? = null) {
     }
 }
 
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
-@Composable
-fun HomeScreenPreview() {
-    BandifyTheme {
-        Scaffold { innerPadding ->
-            Surface(
-                modifier = Modifier
-                    .padding(innerPadding)
-            ) {
-                HomeScreen()
-            }
-        }
-    }
-}
