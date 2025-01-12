@@ -34,7 +34,7 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.pgmv.bandify.database.DatabaseHelper
 import com.pgmv.bandify.ui.components.Day
 import com.pgmv.bandify.ui.components.DaysOfWeekTitle
-import com.pgmv.bandify.ui.components.EventCard
+import com.pgmv.bandify.ui.components.AgendaEventCard
 import com.pgmv.bandify.ui.components.MonthTitle
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -138,8 +138,7 @@ fun AgendaScreen(dbHelper: DatabaseHelper, navController: NavController) {
 
             if (events.isNotEmpty()) {
                 events.forEach {
-                    EventCard(
-                        id = it.id.toString(),
+                    AgendaEventCard(
                         title = it.title,
                         time = it.time,
                         place = it.place,
