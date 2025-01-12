@@ -39,6 +39,14 @@ interface EventDao {
     suspend fun getEventsByDate(date: String): List<Event>
 
     @Query("""
+        SELECT * FROM events 
+        WHERE date >= :today AND user_id = :userId
+        ORDER BY date ASC 
+        LIMIT 5
+    """)
+    fun getNextFiveEvents(today: String, userId: Long): Flow<List<Event>>
+
+    @Query("""
     SELECT e.* FROM events e 
     INNER JOIN event_files ef ON ef.event_id = e.id 
     WHERE ef.file_id = :fileId
