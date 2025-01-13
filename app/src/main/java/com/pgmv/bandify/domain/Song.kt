@@ -19,9 +19,10 @@ data class Song(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     val title: String,
     val artist: String,
-    val duration: Int,
+    val duration: String,
     val key: String,
     val tempo: Int,
+    val tag: String,
     @ColumnInfo("user_id") val userId: Long,
     @ColumnInfo("created_at") val createdAt: String = getCurrentTime(),
     @ColumnInfo("updated_at") val updatedAt: String? = null
