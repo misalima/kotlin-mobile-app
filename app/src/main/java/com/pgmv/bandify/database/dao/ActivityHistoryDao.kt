@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.pgmv.bandify.domain.ActivityHistory
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ActivityHistoryDao {
@@ -30,6 +31,9 @@ interface ActivityHistoryDao {
 
     @Query("SELECT * FROM activity_history WHERE id = :id LIMIT 1")
     suspend fun getActivityById(id: Long): ActivityHistory?
+
+    @Query("SELECT * FROM activity_history WHERE user_id = :userId ORDER BY created_at DESC LIMIT 5")
+    fun getRecentActivitiesByUserId(userId: Long): Flow<List<ActivityHistory>>
 
     @Query("SELECT * FROM activity_history WHERE user_id = :userId")
     suspend fun getActivitiesByUserId(userId: Long): List<ActivityHistory>

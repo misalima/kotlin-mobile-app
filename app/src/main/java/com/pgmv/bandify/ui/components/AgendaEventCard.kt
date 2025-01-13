@@ -1,13 +1,10 @@
 package com.pgmv.bandify.ui.components
 
-import android.location.Address
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -22,8 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.pgmv.bandify.ui.theme.BandifyTheme
 
 @Composable
-fun EventCard(
-    id: String,
+fun AgendaEventCard(
     title: String,
     time: String,
     place: String,
@@ -100,9 +96,8 @@ fun EventCard(
 @Composable
 fun EventCardPreview() {
     BandifyTheme {
-        EventCard(
-            id = "1",
-            title = "Evento 1",
+        AgendaEventCard(
+           title = "Evento 1",
             time = "HH:MM",
             place = "Local do Evento",
             address = "Endereço do Evento"

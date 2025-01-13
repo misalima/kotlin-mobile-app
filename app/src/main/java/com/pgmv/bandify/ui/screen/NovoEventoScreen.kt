@@ -48,8 +48,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.pgmv.bandify.database.DatabaseHelper
+import com.pgmv.bandify.database.dao.ActivityHistoryDao
 import com.pgmv.bandify.database.dao.EventDao
 import com.pgmv.bandify.database.dao.EventSongDao
+import com.pgmv.bandify.domain.ActivityHistory
 import com.pgmv.bandify.domain.Event
 import com.pgmv.bandify.domain.EventSong
 import com.pgmv.bandify.domain.Song
@@ -60,6 +62,8 @@ import com.pgmv.bandify.utils.millisToLocalDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
@@ -70,6 +74,7 @@ import java.util.Locale
 fun NovoEventoScreen(dbHelper: DatabaseHelper) {
     val eventDao = dbHelper.eventDao()
     val eventSongDao = dbHelper.eventSongDao()
+    val activityHistoryDao = dbHelper.activityHistoryDao()
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var selectedTime: String by remember { mutableStateOf("Escolha um horário") }
     var selectedSongs = remember { mutableStateOf(setOf<Song>()) }
@@ -180,7 +185,10 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
             // TextField para o Horário
             TextField(
                 value = selectedTime,
-                onValueChange = { timeError = if(selectedTime == "Escolha um horário") "Informe o horário do evento" else null },
+                onValueChange = {
+                    timeError =
+                        if (selectedTime == "Escolha um horário") "Informe o horário do evento" else null
+                },
                 Modifier
                     .fillMaxWidth()
                     .onFocusEvent {
@@ -298,7 +306,8 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
                 titleError = if (title.isBlank()) "Informe o nome do evento" else null
                 placeError = if (place.isBlank()) "Informe o local do evento" else null
                 addressError = if (address.isBlank()) "Informe o endereço do evento" else null
-                timeError = if (selectedTime == "Escolha um horário") "Informe o horário do evento" else null
+                timeError =
+                    if (selectedTime == "Escolha um horário") "Informe o horário do evento" else null
 
                 if (titleError == null && placeError == null && addressError == null && timeError == null) {
                     saveEvent(
@@ -310,6 +319,7 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
                         selectedSongs = selectedSongs,
                         eventDao = eventDao,
                         eventSongDao = eventSongDao,
+                        activityHistoryDao = activityHistoryDao,
                         coroutineScope = coroutineScope
                     )
 
@@ -434,6 +444,7 @@ fun saveEvent(
     selectedSongs: MutableState<Set<Song>>,
     eventDao: EventDao,
     eventSongDao: EventSongDao,
+    activityHistoryDao: ActivityHistoryDao,
     coroutineScope: CoroutineScope
 ) {
     var eventId: Long = 0L
@@ -459,6 +470,16 @@ fun saveEvent(
                     )
                 }
             }
+            activityHistoryDao.insertActivity(
+                activityHistory = ActivityHistory(
+                    userId = 1,
+                    activity = "Um novo evento foi adicionado",
+                    activityType = "event",
+                    createdAt = LocalDateTime.now(ZoneId.systemDefault()).toString(),
+                    eventId = eventId,
+                    itemName = title
+                )
+            )
 
         } catch (e: Exception) {
             Log.d("NovoEventoScreen", "Erro ao salvar evento: ${e.message}")

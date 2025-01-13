@@ -1,5 +1,6 @@
 package com.pgmv.bandify.utils
 
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -10,16 +11,32 @@ fun getCurrentTime(): String {
     return LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
 }
 
-fun stringToLocalDateTime(dateTimeString: String): LocalDateTime {
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-    return LocalDateTime.parse(dateTimeString, formatter)
-}
-
-fun localDateTimeToString(dateTime: LocalDateTime): String {
-    val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-    return dateTime.format(formatter)
-}
-
 fun Long.millisToLocalDate(millis: Long = this): LocalDate {
     return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.of("GMT")).toLocalDate()
+}
+
+fun formatTimeDifference(createdAt: String): String {
+    val formatter = DateTimeFormatter.ISO_DATE_TIME
+    val createdDateTime = LocalDateTime.parse(createdAt, formatter)
+
+
+    val now = LocalDateTime.now(ZoneId.systemDefault())
+
+
+    val duration = Duration.between(createdDateTime, now)
+    val seconds = duration.seconds
+    val minutes = duration.toMinutes()
+    val hours = duration.toHours()
+    val days = duration.toDays()
+
+    return when {
+        seconds < 10 -> "Agora"
+        seconds < 60 -> "Há $seconds segundos"
+        minutes < 2 -> "Há 1 minuto"
+        minutes < 60 -> "Há $minutes minutos"
+        hours < 24 -> "Há $hours horas"
+        hours < 48 -> "Ontem"
+        days < 7 -> "Há ${days} dias"
+        else -> createdDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+    }
 }
