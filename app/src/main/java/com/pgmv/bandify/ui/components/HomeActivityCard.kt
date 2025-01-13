@@ -27,8 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pgmv.bandify.domain.ActivityHistory
 import com.pgmv.bandify.ui.theme.BandifyTheme
+import com.pgmv.bandify.ui.theme.Grey40
 import com.pgmv.bandify.ui.theme.Grey60
 import com.pgmv.bandify.utils.formatTimeDifference
 
@@ -85,9 +87,10 @@ fun HomeActivityCard(
             Text(
                 text = formatTimeDifference(activity.createdAt),
                 style = MaterialTheme.typography.labelSmall,
+                fontSize = 8.sp,
                 fontWeight = FontWeight(700),
-                color = Grey60,
-                modifier = Modifier.weight(1F).padding(start = 4.dp)
+                color = Grey40,
+                modifier = Modifier.weight(1F).padding(4.dp)
             )
             IconButton(
                 onClick = { /*TODO*/ },

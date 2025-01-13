@@ -24,13 +24,19 @@ fun formatTimeDifference(createdAt: String): String {
 
 
     val duration = Duration.between(createdDateTime, now)
+    val seconds = duration.seconds
+    val minutes = duration.toMinutes()
     val hours = duration.toHours()
     val days = duration.toDays()
 
     return when {
-        hours < 24 -> "$hours horas atrás"
+        seconds < 10 -> "Agora"
+        seconds < 60 -> "Há $seconds segundos"
+        minutes < 2 -> "Há 1 minuto"
+        minutes < 60 -> "Há $minutes minutos"
+        hours < 24 -> "Há $hours horas"
         hours < 48 -> "Ontem"
-        days < 7 -> "${days} dias atrás"
+        days < 7 -> "Há ${days} dias"
         else -> createdDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
     }
 }
