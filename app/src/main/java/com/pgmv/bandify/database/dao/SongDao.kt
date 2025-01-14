@@ -36,6 +36,9 @@ interface SongDao {
     @Query("SELECT * FROM songs WHERE artist LIKE :artist")
     fun getSongsByArtist(artist: String): Flow<List<Song>>
 
+    @Query("SELECT * FROM songs WHERE tag LIKE :tag")
+    fun getSongsByTag(tag: String): Flow<List<Song>>
+
     @Query("""
     SELECT s.* FROM songs s
     INNER JOIN event_songs es ON es.song_id = s.id
