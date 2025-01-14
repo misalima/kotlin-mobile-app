@@ -14,7 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pgmv.bandify.database.DatabaseHelper
-import com.pgmv.bandify.domain.Event
 import com.pgmv.bandify.domain.Song
 import com.pgmv.bandify.ui.components.DeleteConfirmationDialog
 import com.pgmv.bandify.ui.components.FilterRow
@@ -35,55 +34,29 @@ import com.pgmv.bandify.ui.components.SongCard
 import com.pgmv.bandify.ui.theme.BandifyTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
 fun RepertorioScreen(dbHelper: DatabaseHelper? = null) {
     val songDao = dbHelper?.songDao()
-    var songs by remember { mutableStateOf(emptyList<Song>()) }
+    val eventDao = dbHelper?.eventDao()
+
     var selectedFilter by remember { mutableStateOf("Todas") }
     var selectedEvent by remember { mutableStateOf<Long?>(null) }
-    var eventList by remember { mutableStateOf(emptyList<Event>()) }
-    val showDialog = remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
     var songToDelete by remember { mutableStateOf<Song?>(null) }
 
-    fun loadSongs() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val loadedSongs: List<Song> = when (selectedFilter) {
-                "Todas" -> songDao?.getAllSongs()?.first() ?: emptyList()
-                "Evento" -> selectedEvent?.let { eventId -> songDao?.getSongsForEvent(eventId)?.first() ?: emptyList() } ?: emptyList()
-                else -> songDao?.getSongsByTag(selectedFilter)?.first() ?: emptyList()
-            }
-            withContext(Dispatchers.Main) {
-                songs = loadedSongs
-            }
-        }
+    val songsFlow = remember(selectedFilter, selectedEvent) {
+        when (selectedFilter) {
+            "Todas" -> songDao?.getAllSongs() ?: kotlinx.coroutines.flow.flowOf(emptyList())
+            "Evento" -> selectedEvent?.let { eventId ->
+                songDao?.getSongsForEvent(eventId)
+            } ?: kotlinx.coroutines.flow.flowOf(emptyList())
+            else -> songDao?.getSongsByTag(selectedFilter) ?: kotlinx.coroutines.flow.flowOf(emptyList()) }
     }
 
-    fun loadEvents() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val events: List<Event>? = dbHelper?.eventDao()?.getAllEvents()?.first()
-            withContext(Dispatchers.Main) {
-                if (events != null) {
-                    eventList = events
-                }
-            }
-        }
-    }
-
-    fun deleteSong(song: Song) {
-        CoroutineScope(Dispatchers.IO).launch {
-            songDao?.deleteSong(song)
-            loadSongs()
-        }
-    }
-
-    LaunchedEffect(selectedFilter, selectedEvent) {
-        loadSongs()
-        loadEvents()
-    }
+    val songs by songsFlow.collectAsState(initial = emptyList())
+    val eventList = eventDao?.getAllEvents()?.collectAsState(initial = emptyList()) ?: remember { mutableStateOf(emptyList()) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -131,8 +104,12 @@ fun RepertorioScreen(dbHelper: DatabaseHelper? = null) {
                         selectedEvent = null
                     }
                 },
-                eventList = eventList,
-                selectedEvent = selectedEvent?.let { id -> eventList.find { it.id == id } },
+                eventList = eventList.value,
+                selectedEvent = selectedEvent?.let {
+                    id -> eventList.value.find {
+                        it.id == id
+                    }
+               },
                 onEventSelected = { event ->
                     selectedEvent = event.id
                 }
@@ -155,9 +132,9 @@ fun RepertorioScreen(dbHelper: DatabaseHelper? = null) {
                     songs.forEach { song ->
                         SongCard(
                             song = song,
-                            onDelete = {
-                                songToDelete = song
-                                showDialog.value = true
+                            onDelete = { selectedSong ->
+                                songToDelete = selectedSong
+                                showDialog = true
                             }
                         )
                     }
@@ -166,15 +143,20 @@ fun RepertorioScreen(dbHelper: DatabaseHelper? = null) {
         }
     }
 
-    if (showDialog.value && songToDelete != null) {
+    if (showDialog && songToDelete != null) {
         DeleteConfirmationDialog(
             item = songToDelete?.title?: "",
             onConfirm = {
-                songToDelete?.let { deleteSong(it) }
-                showDialog.value = false
+                songToDelete?.let { song ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        songDao?.deleteSong(song)
+                    }
+                }
+                showDialog = false
             },
             onDismiss = {
-                showDialog.value = false
+                songToDelete = null
+                showDialog = false
             }
         )
     }
