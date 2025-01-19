@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,13 +52,13 @@ fun HomeActivityCard(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 16.dp),
+                .padding(8.dp),
             horizontalArrangement = Arrangement.Center,
         ) {
             Icon(
                 imageVector = if(activity.activityType == "song") Icons.Default.MusicNote else if(activity.activityType == "file") Icons.Default.FileCopy else Icons.Default.Event,
                 contentDescription = "Tipo de atividade",
-                Modifier.size(32.dp).weight(0.5F),
+                Modifier.size(24.dp).weight(0.5F),
             )
             Row (
                 modifier = Modifier.weight(2.5F).padding(start = 8.dp),
@@ -77,7 +78,7 @@ fun HomeActivityCard(
                     )
                     Text(
                         text = activity.itemName,
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight(700),
                         color = MaterialTheme.colorScheme.onSecondary
                     )
@@ -90,7 +91,8 @@ fun HomeActivityCard(
                 fontSize = 8.sp,
                 fontWeight = FontWeight(700),
                 color = Grey40,
-                modifier = Modifier.weight(1F).padding(4.dp)
+                modifier = Modifier.weight(1F).padding(4.dp),
+                textAlign = TextAlign.Center
             )
             IconButton(
                 onClick = { /*TODO*/ },
@@ -100,7 +102,7 @@ fun HomeActivityCard(
                     imageVector = if (activity.activityType == "song" || activity.activityType == "file") Icons.Default.Download else Icons.Default.RemoveRedEye,
                     contentDescription = if (activity.activityType == "song" || activity.activityType == "file") "Baixar arquivo" else "Visualizar evento",
                     tint = MaterialTheme.colorScheme.onSecondary,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
 

@@ -15,6 +15,7 @@ import com.pgmv.bandify.ui.screen.ArquivosScreen
 import com.pgmv.bandify.ui.screen.AuthenticationViewModel
 import com.pgmv.bandify.ui.screen.HomeScreen
 import com.pgmv.bandify.ui.screen.LoginScreen
+import com.pgmv.bandify.ui.screen.NovaMusicaScreen
 import com.pgmv.bandify.ui.screen.NovoEventoScreen
 import com.pgmv.bandify.ui.screen.PerfilScreen
 import com.pgmv.bandify.ui.screen.RepertorioScreen
@@ -86,7 +87,8 @@ fun NavigationHost(
             setShowBackButton(false)
             setShowBottomBar(true)
             setShowTopBar(true)
-            RepertorioScreen(dbHelper)
+            RepertorioScreen(dbHelper, navController)
+
         }
         addScreen("arquivos", setScreenTitle, setHomeScreen, setShowBottomBar, setShowBackButton) {
             setShowBackButton(false)
@@ -105,6 +107,11 @@ fun NavigationHost(
             setShowBottomBar(false)
             setShowTopBar(true)
             NovoEventoScreen(dbHelper)
+        }
+        addScreen("nova_musica", setScreenTitle, setHomeScreen, setShowBottomBar) {
+            setShowBottomBar(false)
+            setShowBackButton(true)
+            NovaMusicaScreen(dbHelper = dbHelper, navController = navController)
         }
     }
 }
