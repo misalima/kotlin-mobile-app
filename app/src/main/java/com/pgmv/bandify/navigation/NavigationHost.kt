@@ -12,7 +12,9 @@ import com.pgmv.bandify.database.DatabaseHelper
 import com.pgmv.bandify.navigation.utils.getScreenTitle
 import com.pgmv.bandify.ui.screen.AgendaScreen
 import com.pgmv.bandify.ui.screen.ArquivosScreen
+import com.pgmv.bandify.ui.screen.AuthenticationViewModel
 import com.pgmv.bandify.ui.screen.HomeScreen
+import com.pgmv.bandify.ui.screen.LoginScreen
 import com.pgmv.bandify.ui.screen.NovaMusicaScreen
 import com.pgmv.bandify.ui.screen.NovoEventoScreen
 import com.pgmv.bandify.ui.screen.PerfilScreen
@@ -23,7 +25,10 @@ private fun NavGraphBuilder.addScreen(
     route: String,
     setScreenTitle: (String) -> Unit,
     setHomeScreen: (Boolean) -> Unit,
-    setShowBottomBar: (Boolean) -> Unit,
+    setShowBottomBar: (Boolean) -> Unit = {},
+    setShowBackButton: (Boolean) -> Unit = {},
+    setShowTopBar: (Boolean) -> Unit = {},
+
     content: @Composable () -> Unit
 ) {
     composable(
@@ -35,7 +40,6 @@ private fun NavGraphBuilder.addScreen(
     ) {
         setScreenTitle(getScreenTitle(route))
         setHomeScreen(route == "home")
-        setShowBottomBar(true)
         content()
     }
 }
@@ -48,33 +52,61 @@ fun NavigationHost(
     setHomeScreen: (Boolean) -> Unit,
     dbHelper: DatabaseHelper,
     setShowBackButton: (Boolean) -> Unit,
-    setShowBottomBar: (Boolean) -> Unit
+    setShowBottomBar: (Boolean) -> Unit,
+    setShowTopBar: (Boolean) -> Unit,
+    authenticationViewModel: AuthenticationViewModel
 ) {
-    AnimatedNavHost(navController = navController, startDestination = "home") {
-        addScreen("home", setScreenTitle, setHomeScreen, setShowBottomBar) {
+    AnimatedNavHost(navController = navController, startDestination = "login") {
+        composable(
+            route = "login",
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() },
+            popEnterTransition = { fadeIn() },
+            popExitTransition = { fadeOut() }
+        ) {
+            setScreenTitle("Login")
+            setHomeScreen(false)
+            setShowBottomBar(false)
             setShowBackButton(false)
+            setShowTopBar(false)
+            LoginScreen( navController,authenticationViewModel)
+            }
+        addScreen("home", setScreenTitle, setHomeScreen, setShowBottomBar, setShowBackButton) {
+            setShowBackButton(false)
+            setShowBottomBar(true)
+            setShowTopBar(true)
             HomeScreen(dbHelper, navController)
         }
-        addScreen("agenda", setScreenTitle, setHomeScreen, setShowBottomBar) {
+        addScreen("agenda", setScreenTitle, setHomeScreen, setShowBottomBar, setShowBackButton) {
             setShowBackButton(false)
+            setShowBottomBar(true)
+            setShowTopBar(true)
             AgendaScreen(dbHelper, navController)
         }
-        addScreen("repertório", setScreenTitle, setHomeScreen, setShowBottomBar) {
+        addScreen("repertório", setScreenTitle, setHomeScreen, setShowBottomBar, setShowBackButton) {
             setShowBackButton(false)
+            setShowBottomBar(true)
+            setShowTopBar(true)
             RepertorioScreen(dbHelper, navController)
+
         }
-        addScreen("arquivos", setScreenTitle, setHomeScreen, setShowBottomBar) {
+        addScreen("arquivos", setScreenTitle, setHomeScreen, setShowBottomBar, setShowBackButton) {
             setShowBackButton(false)
+            setShowBottomBar(true)
+            setShowTopBar(true)
             ArquivosScreen(dbHelper)
         }
-        addScreen("perfil", setScreenTitle, setHomeScreen, setShowBottomBar) {
+        addScreen("perfil", setScreenTitle, setHomeScreen, setShowBottomBar, setShowBackButton) {
             setShowBackButton(false)
+            setShowBottomBar(true)
+            setShowTopBar(true)
             PerfilScreen(dbHelper)
         }
-        addScreen("novo_evento", setScreenTitle, setHomeScreen, setShowBottomBar) {
-            setShowBottomBar(false)
+        addScreen("novo_evento", setScreenTitle, setHomeScreen, setShowBottomBar, setShowBackButton) {
             setShowBackButton(true)
-            NovoEventoScreen(dbHelper = dbHelper)
+            setShowBottomBar(false)
+            setShowTopBar(true)
+            NovoEventoScreen(dbHelper)
         }
         addScreen("nova_musica", setScreenTitle, setHomeScreen, setShowBottomBar) {
             setShowBottomBar(false)

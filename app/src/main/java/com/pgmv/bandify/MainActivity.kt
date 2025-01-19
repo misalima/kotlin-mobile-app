@@ -22,6 +22,7 @@ import com.pgmv.bandify.domain.User
 import com.pgmv.bandify.navigation.NavigationHost
 import com.pgmv.bandify.ui.components.BottomBar
 import com.pgmv.bandify.ui.components.TopBar
+import com.pgmv.bandify.ui.screen.AuthenticationViewModel
 import com.pgmv.bandify.ui.theme.BandifyTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val dbHelper = DatabaseHelper.getInstance(applicationContext)
         checkAndInsertUser(dbHelper)
+
         setContent {
             BandifyTheme {
 
@@ -44,10 +46,14 @@ class MainActivity : ComponentActivity() {
                 val (isHomeScreen, setIsHomeScreen) = remember { mutableStateOf(true) }
                 val (showBackButton, setShowBackButton) = remember { mutableStateOf(false) }
                 val (showBottomBar, setShowBottomBar) = remember { mutableStateOf(true) }
+                val (showTopBar, setShowTopBar) = remember { mutableStateOf(true) }
+
+
+
 
                 Scaffold(
                     topBar = {
-                        TopBar(screenTitle = screenTitle, isHomeScreen = isHomeScreen, showBackButton = showBackButton, navController = navController)
+                        if (showTopBar) TopBar(screenTitle = screenTitle, isHomeScreen = isHomeScreen, showBackButton = showBackButton, navController = navController)
                     },
                     bottomBar = {
                         if (showBottomBar) BottomBar(navController = navController)
@@ -59,9 +65,20 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        NavigationHost(navController, setScreenTitle, setIsHomeScreen, dbHelper, setShowBackButton, setShowBottomBar)
+
+                        NavigationHost(
+                            navController = navController,
+                            setScreenTitle = setScreenTitle,
+                            setHomeScreen = setIsHomeScreen,
+                            dbHelper = dbHelper,
+                            setShowBackButton = setShowBackButton,
+                            setShowBottomBar = setShowBottomBar,
+                            setShowTopBar = setShowTopBar,
+                            authenticationViewModel = AuthenticationViewModel()
+                        )
                     }
                 }
+
             }
         }
 
@@ -70,7 +87,7 @@ class MainActivity : ComponentActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val user = dbHelper.userDao().getUserById(1)
             if (user == null) {
-                // User with ID 1 does not exist, insert it
+
                 val newUser = User(
                     id = 1, username = "johndoe",
                     firstName = "John",
