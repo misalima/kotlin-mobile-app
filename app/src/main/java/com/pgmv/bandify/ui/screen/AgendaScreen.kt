@@ -142,7 +142,13 @@ fun AgendaScreen(dbHelper: DatabaseHelper, navController: NavController) {
                         title = it.title,
                         time = it.time,
                         place = it.place,
-                        address = it.address
+                        address = it.address,
+                        onButtonClick = {
+                            navController.navigate("repertorio?event_id=${it.id}") {
+                                popUpTo("home") { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
                     )
                     Spacer(modifier = Modifier.padding(8.dp))
                 }

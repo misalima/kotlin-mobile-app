@@ -77,7 +77,7 @@ fun NovoEventoScreen(dbHelper: DatabaseHelper) {
     val activityHistoryDao = dbHelper.activityHistoryDao()
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var selectedTime: String by remember { mutableStateOf("Escolha um horário") }
-    var selectedSongs = remember { mutableStateOf(setOf<Song>()) }
+    val selectedSongs = remember { mutableStateOf(setOf<Song>()) }
     var title: String by remember { mutableStateOf("") }
     var place: String by remember { mutableStateOf("") }
     var address: String by remember { mutableStateOf("") }
@@ -447,7 +447,8 @@ fun saveEvent(
     activityHistoryDao: ActivityHistoryDao,
     coroutineScope: CoroutineScope
 ) {
-    var eventId: Long = 0L
+    val songs = selectedSongs.value
+    var eventId: Long = 0
     coroutineScope.launch {
         try {
             eventId = eventDao.insertEvent(
@@ -461,8 +462,8 @@ fun saveEvent(
                 )
             )
 
-            if (eventId != 0L && selectedSongs.value.isNotEmpty()) {
-                selectedSongs.value.forEach { song ->
+            if (songs.isNotEmpty()) {
+                songs.forEach { song ->
                     eventSongDao.insertEventSong(
                         EventSong(
                             eventId, song.id

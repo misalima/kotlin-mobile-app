@@ -24,19 +24,23 @@ private fun NavGraphBuilder.addScreen(
     setScreenTitle: (String) -> Unit,
     setHomeScreen: (Boolean) -> Unit,
     setShowBottomBar: (Boolean) -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable (arguments: Map<String, String?>) -> Unit
 ) {
     composable(
-        route,
+        route = route,
+        arguments = emptyList(), // Add nav arguments here if needed
         enterTransition = { fadeIn() },
         exitTransition = { fadeOut() },
         popEnterTransition = { fadeIn() },
         popExitTransition = { fadeOut() }
-    ) {
+    ) { backStackEntry ->
+        val arguments = backStackEntry.arguments?.let {
+            it.keySet().associateWith { key -> it.getString(key) }
+        } ?: emptyMap()
         setScreenTitle(getScreenTitle(route))
         setHomeScreen(route == "home")
         setShowBottomBar(true)
-        content()
+        content(arguments)
     }
 }
 
@@ -59,9 +63,11 @@ fun NavigationHost(
             setShowBackButton(false)
             AgendaScreen(dbHelper, navController)
         }
-        addScreen("repertório", setScreenTitle, setHomeScreen, setShowBottomBar) {
+        addScreen("repertorio?event_id={eventId}", setScreenTitle, setHomeScreen, setShowBottomBar) {
+            arguments ->
+            val eventId = arguments["eventId"]?.toLongOrNull()
             setShowBackButton(false)
-            RepertorioScreen(dbHelper, navController)
+            RepertorioScreen(dbHelper, navController, eventId)
         }
         addScreen("arquivos", setScreenTitle, setHomeScreen, setShowBottomBar) {
             setShowBackButton(false)

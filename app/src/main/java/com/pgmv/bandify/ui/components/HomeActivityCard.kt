@@ -46,6 +46,9 @@ fun HomeActivityCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.onPrimary
         ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        ),
     ) {
 
         Row (
