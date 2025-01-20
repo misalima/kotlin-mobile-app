@@ -43,9 +43,9 @@ import java.util.Locale
 @Composable
 fun AgendaScreen(dbHelper: DatabaseHelper, navController: NavController) {
     val eventDao = dbHelper.eventDao()
+    val userId = 1L
 
-    val retrievedEvents = eventDao.getEventsByUserId(1).collectAsState(initial = emptyList()).value
-
+    val retrievedEvents = eventDao.getEventsByUserId(userId).collectAsState(initial = emptyList()).value
 
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(12) } // Adjust as needed
