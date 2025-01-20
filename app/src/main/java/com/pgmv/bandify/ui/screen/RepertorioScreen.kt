@@ -41,13 +41,13 @@ import kotlinx.coroutines.launch
 fun RepertorioScreen(
     dbHelper: DatabaseHelper? = null,
     navController: NavController,
-    eventId: Long?
+    eventId: String?
 ) {
     val songDao = dbHelper?.songDao()
     val eventDao = dbHelper?.eventDao()
 
     var selectedFilter by remember { mutableStateOf(if (eventId != null) "Evento" else "Todas") }
-    var selectedEvent by remember { mutableStateOf<Long?>(eventId) }
+    var selectedEvent by remember { mutableStateOf<Long?>(eventId?.toLongOrNull()) }
     var showDialog by remember { mutableStateOf(false) }
     var songToDelete by remember { mutableStateOf<Song?>(null) }
 

@@ -38,7 +38,7 @@ import com.pgmv.bandify.ui.theme.BandifyTheme
 @Composable
 fun BottomBar(navController: NavController) {
 
-    val tabs = listOf("home", "agenda", "repertório", "arquivos", "perfil")
+    val tabs = listOf("home", "agenda", "repertorio", "arquivos", "perfil")
     val icons = listOf(
         Icons.Default.Home,
         Icons.Default.DateRange,
@@ -49,8 +49,11 @@ fun BottomBar(navController: NavController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val selectedIndex = remember(currentRoute) {
-        tabs.indexOf(currentRoute)
+
+    val baseRoute = currentRoute?.substringBefore("?")
+
+    val selectedIndex = remember(baseRoute) {
+        tabs.indexOf(baseRoute)
     }
 
     TabRow(
@@ -66,7 +69,7 @@ fun BottomBar(navController: NavController) {
                 label = "Icon Offset Animation")
 
             Tab(
-                selected = tab == currentRoute,
+                selected = tab == baseRoute,
                 onClick = {
                     navController.navigate(tab){
                         popUpTo(navController.graph.startDestinationId){

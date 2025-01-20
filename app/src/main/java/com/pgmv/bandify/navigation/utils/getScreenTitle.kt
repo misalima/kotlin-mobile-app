@@ -4,7 +4,7 @@ fun getScreenTitle(route: String): String {
     return when (route) {
         "home" -> "Bandify"
         "agenda" -> "Agenda"
-        "repertorio" -> "Repertório"
+        "repertorio?event_id={eventId}" -> "Repertório"
         "arquivos" -> "Arquivos"
         "perfil" -> "Perfil"
         "novo_evento" -> "Adicionar Evento"
