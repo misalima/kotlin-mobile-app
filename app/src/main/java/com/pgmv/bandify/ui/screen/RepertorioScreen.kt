@@ -41,12 +41,13 @@ import kotlinx.coroutines.launch
 fun RepertorioScreen(
     dbHelper: DatabaseHelper? = null,
     navController: NavController,
+    eventId: String?
 ) {
     val songDao = dbHelper?.songDao()
     val eventDao = dbHelper?.eventDao()
 
-    var selectedFilter by remember { mutableStateOf("Todas") }
-    var selectedEvent by remember { mutableStateOf<Long?>(null) }
+    var selectedFilter by remember { mutableStateOf(if (eventId != null) "Evento" else "Todas") }
+    var selectedEvent by remember { mutableStateOf<Long?>(eventId?.toLongOrNull()) }
     var showDialog by remember { mutableStateOf(false) }
     var songToDelete by remember { mutableStateOf<Song?>(null) }
 
@@ -58,7 +59,6 @@ fun RepertorioScreen(
             } ?: kotlinx.coroutines.flow.flowOf(emptyList())
             else -> songDao?.getSongsByTag(selectedFilter) ?: kotlinx.coroutines.flow.flowOf(emptyList()) }
     }
-
     val songs by songsFlow.collectAsState(initial = emptyList())
     val eventList = eventDao?.getAllEvents()?.collectAsState(initial = emptyList()) ?: remember { mutableStateOf(emptyList()) }
 
@@ -174,7 +174,7 @@ fun RepertorioScreenPreview() {
         RepertorioScreen(
             navController = NavController(
                 context = androidx.compose.ui.platform.LocalContext.current
-            )
+            ), eventId = null
         )
     }
 }

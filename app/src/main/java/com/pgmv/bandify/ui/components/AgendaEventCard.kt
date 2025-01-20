@@ -23,73 +23,100 @@ fun AgendaEventCard(
     title: String,
     time: String,
     place: String,
-    address: String
+    address: String,
+    onButtonClick: () -> Unit = {}
 ) {
- Card (
-     modifier = Modifier.padding(horizontal = 24.dp),
-     colors = CardDefaults.cardColors(
-         containerColor = MaterialTheme.colorScheme.onPrimary
-     ),
- ) {
-     Column(modifier = Modifier
-         .fillMaxWidth()
-         .padding(vertical = 16.dp, horizontal = 24.dp),
-         verticalArrangement = Arrangement.spacedBy(8.dp)) {
-         Column {
-             Text(
-                 text = "Nome do evento:",
-                 style = MaterialTheme.typography.labelSmall,
-                 fontWeight = FontWeight(400),
-                 color = MaterialTheme.colorScheme.onSecondary
-             )
-             Text(text = title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight(700))
-         }
-         Row (
-             modifier = Modifier.fillMaxWidth()
-         ) {
-             Column (
-                 modifier = Modifier
-                     .weight(2F)
-                     .fillMaxWidth()
-             ) {
-                 Text(
-                     text = "Local:",
-                     style = MaterialTheme.typography.labelSmall,
-                     fontWeight = FontWeight(400),
-                     color = MaterialTheme.colorScheme.onSecondary
-                 )
-                 Text(text = place, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSecondary, fontWeight = FontWeight(500))
-             }
+    Card(
+        modifier = Modifier.padding(horizontal = 24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        ),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp, horizontal = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Column {
+                Text(
+                    text = "Nome do evento:",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight(400),
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight(700)
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .weight(2F)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Local:",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight(400),
+                        color = MaterialTheme.colorScheme.onSecondary
+                    )
+                    Text(
+                        text = place,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        fontWeight = FontWeight(500)
+                    )
+                }
 
-             Column (
-                 modifier = Modifier
-                     .weight(1F)
-                     .fillMaxWidth()
-             ) {
-                 Text(
-                     text = "Horário:",
-                     style = MaterialTheme.typography.labelSmall,
-                     fontWeight = FontWeight(400),
-                     color = MaterialTheme.colorScheme.onSecondary
-                 )
-                 Text(text = time, style = MaterialTheme.typography.bodyMedium,  color = MaterialTheme.colorScheme.onSecondary, fontWeight = FontWeight(500))
-             }
-         }
-         Column {
-             Text(
-                 text = "Endereço:",
-                 style = MaterialTheme.typography.labelSmall,
-                 fontWeight = FontWeight(400),
-                 color = MaterialTheme.colorScheme.onSecondary
-             )
-             Text(text = address, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondary, fontWeight = FontWeight(400))
-         }
-         TextButton(onClick = { /* TODO: Handle button click */ }, modifier = Modifier
-             .align(Alignment.CenterHorizontally)) {
-             Text(text = "ver músicas do evento")
-         }
-     }
- }
+                Column(
+                    modifier = Modifier
+                        .weight(1F)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Horário:",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight(400),
+                        color = MaterialTheme.colorScheme.onSecondary
+                    )
+                    Text(
+                        text = time,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        fontWeight = FontWeight(500)
+                    )
+                }
+            }
+            Column {
+                Text(
+                    text = "Endereço:",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight(400),
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+                Text(
+                    text = address,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    fontWeight = FontWeight(400)
+                )
+            }
+            TextButton(
+                onClick = onButtonClick, modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "ver músicas do evento")
+            }
+        }
+    }
 }
 
 @Preview
@@ -97,7 +124,7 @@ fun AgendaEventCard(
 fun EventCardPreview() {
     BandifyTheme {
         AgendaEventCard(
-           title = "Evento 1",
+            title = "Evento 1",
             time = "HH:MM",
             place = "Local do Evento",
             address = "Endereço do Evento"

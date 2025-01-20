@@ -1,7 +1,8 @@
 package com.pgmv.bandify.ui.screen
 
-import android.widget.Space
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,21 +31,45 @@ fun HomeScreen(dbHelper: DatabaseHelper? = null, navController: NavController) {
     val activityHistoryDao = dbHelper?.activityHistoryDao()
     val nextFiveEvents = eventDao?.getNextFiveEvents(LocalDate.now().toString(), 1)
         ?.collectAsState(initial = emptyList())
-    val recentActivities = activityHistoryDao?.getRecentActivitiesByUserId(1)?.collectAsState(initial = emptyList())
+    val recentActivities =
+        activityHistoryDao?.getRecentActivitiesByUserId(1)?.collectAsState(initial = emptyList())
 
     val parentHeight = LocalConfiguration.current.screenHeightDp.dp
     Column(
-        modifier = Modifier.fillMaxWidth().padding(32.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp)
     ) {
-        Text(
-            text = "Próximos eventos",
-            style = MaterialTheme.typography.titleLarge
-        )
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(
+                text = "Próximos eventos",
+                style = MaterialTheme.typography.titleLarge
+            )
+            TextButton(
+                onClick = {
+                    navController.navigate("agenda") {
+                        popUpTo("home") { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            ) {
+                Text(
+                    text = "Ir para agenda",
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.padding(8.dp))
         Column(
-            modifier = Modifier.fillMaxWidth().height(parentHeight.div(2)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(parentHeight.div(2)),
         ) {
-            LazyColumn (
+            LazyColumn(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (nextFiveEvents != null) {
@@ -59,7 +84,12 @@ fun HomeScreen(dbHelper: DatabaseHelper? = null, navController: NavController) {
                         }
                     } else {
                         items(nextFiveEvents.value) { event ->
-                            HomeEventCard(event = event)
+                            HomeEventCard(event = event, onSongsIconClick = {
+                                navController.navigate("repertorio?event_id=${event.id}") {
+                                    popUpTo("home") { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            })
                             Spacer(modifier = Modifier.padding(4.dp))
                         }
                     }
@@ -75,26 +105,17 @@ fun HomeScreen(dbHelper: DatabaseHelper? = null, navController: NavController) {
                 }
 
             }
-            TextButton(
-                onClick = { navController.navigate("agenda") {
-                    popUpTo("home") { inclusive = true }
-                    launchSingleTop = true
-                } },
-                modifier = Modifier.align(Alignment.End),
-            ) {
-                Text(
-                    text = "Ir para agenda",
-                )
-            }
+
         }
 
 
         Text(
             text = "Atividades Recentes",
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(top = 8.dp)
         )
         Spacer(modifier = Modifier.padding(8.dp))
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier.fillMaxWidth(),
         ) {
             if (recentActivities != null) {
