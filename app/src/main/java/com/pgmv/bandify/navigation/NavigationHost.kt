@@ -68,7 +68,7 @@ fun NavigationHost(
         }
         addScreen("perfil", setScreenTitle, setHomeScreen, setShowBottomBar) {
             setShowBackButton(false)
-            PerfilScreen(dbHelper)
+            PerfilScreen( dbHelper, userId = 1)
         }
         addScreen("novo_evento", setScreenTitle, setHomeScreen, setShowBottomBar) {
             setShowBottomBar(false)

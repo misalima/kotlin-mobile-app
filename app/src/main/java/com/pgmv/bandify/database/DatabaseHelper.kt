@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.pgmv.bandify.database.dao.ActivityHistoryDao
 import com.pgmv.bandify.database.dao.EventDao
@@ -39,15 +38,23 @@ abstract class DatabaseHelper : RoomDatabase() {
 
     // Static do Kotlin
     companion object {
+        @Volatile
+        private var INSTANCE: DatabaseHelper? = null
+
         fun getInstance(context: Context): DatabaseHelper {
-            return Room.databaseBuilder(
-                context,
-                DatabaseHelper::class.java,
-                "bandify.db"
-            ).allowMainThreadQueries()
-                .build()
+            return INSTANCE ?: synchronized(this) {
+                Room.databaseBuilder(
+                    context.applicationContext,
+                    DatabaseHelper::class.java,
+                    "bandify.db"
+                ).build().also {
+                    INSTANCE = it
+                }
+            }
         }
     }
 
-
 }
+
+
+

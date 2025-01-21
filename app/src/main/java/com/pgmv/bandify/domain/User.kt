@@ -16,4 +16,6 @@ data class User (
     val phone: String,
     val roles: List<String> = emptyList(),
     @ColumnInfo("created_at") val createdAt: String = getCurrentTime(),
-)
+) {
+
+}
