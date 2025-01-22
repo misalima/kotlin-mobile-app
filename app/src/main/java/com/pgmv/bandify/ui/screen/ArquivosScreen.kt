@@ -1,33 +1,46 @@
 package com.pgmv.bandify.ui.screen
 
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
+
+
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.room.Database
+import androidx.navigation.NavController
 import com.pgmv.bandify.database.DatabaseHelper
-import com.pgmv.bandify.domain.File
 import com.pgmv.bandify.ui.theme.BandifyTheme
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun ArquivosScreen(dbHelper: DatabaseHelper? = null) {
+fun ArquivosScreen(
+    dbHelper: DatabaseHelper? = null,
+    navController: NavController
+){
     val fileDao = dbHelper?.fileDao()
-    // fileDao now can be used for database operations
 
-   Text(text = "Arquivos")
+    // Armazena a categoria dos arquivos
+    var selectedCategory by remember { mutableStateOf("Todos") }
+
+
+    val filesFlow = remember(selectedCategory) {
+        when (selectedCategory) {
+            "PDF" -> fileDao?.getFilesByCategory("PDF") ?: flowOf(emptyList())
+            "Imagem" -> fileDao?.getFilesByCategory("Imagem") ?: flowOf(emptyList())
+            else -> fileDao?.getAllFiles() ?: flowOf(emptyList())
+        }
+    }
+
 }
 
 @Preview (
     showBackground = true,
     showSystemUi = true)
+
 @Composable
-fun ArquivoScreenPreview() {
+fun ArquivosScreenPreview() {
     BandifyTheme {
-        ArquivosScreen()
+        ArquivosScreen(navController = NavController(context = androidx.compose.ui.platform.LocalContext.current))
     }
 }
