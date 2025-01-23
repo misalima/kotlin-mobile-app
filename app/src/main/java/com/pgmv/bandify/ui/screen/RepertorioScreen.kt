@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.pgmv.bandify.database.DatabaseHelper
 import com.pgmv.bandify.domain.Song
 import com.pgmv.bandify.ui.components.DeleteConfirmationDialog
@@ -37,7 +38,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun RepertorioScreen(dbHelper: DatabaseHelper? = null) {
+fun RepertorioScreen(
+    dbHelper: DatabaseHelper? = null,
+    navController: NavController,
+) {
     val songDao = dbHelper?.songDao()
     val eventDao = dbHelper?.eventDao()
 
@@ -62,7 +66,7 @@ fun RepertorioScreen(dbHelper: DatabaseHelper? = null) {
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             Button (
-                onClick = { },
+                onClick = { navController.navigate("nova_musica") },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
@@ -155,7 +159,6 @@ fun RepertorioScreen(dbHelper: DatabaseHelper? = null) {
                 showDialog = false
             },
             onDismiss = {
-                songToDelete = null
                 showDialog = false
             }
         )
@@ -168,6 +171,10 @@ fun RepertorioScreen(dbHelper: DatabaseHelper? = null) {
 @Composable
 fun RepertorioScreenPreview() {
     BandifyTheme {
-        RepertorioScreen()
+        RepertorioScreen(
+            navController = NavController(
+                context = androidx.compose.ui.platform.LocalContext.current
+            )
+        )
     }
 }
