@@ -55,21 +55,8 @@ fun NavigationHost(
     setShowTopBar: (Boolean) -> Unit,
     authenticationViewModel: AuthenticationViewModel
 ) {
-    AnimatedNavHost(navController = navController, startDestination = "login") {
-        composable(
-            route = "login",
-            enterTransition = { fadeIn() },
-            exitTransition = { fadeOut() },
-            popEnterTransition = { fadeIn() },
-            popExitTransition = { fadeOut() }
-        ) {
-            setScreenTitle("Login")
-            setHomeScreen(false)
-            setShowBottomBar(false)
-            setShowBackButton(false)
-            setShowTopBar(false)
-            LoginScreen( navController,authenticationViewModel)
-            }
+    AnimatedNavHost(navController = navController, startDestination = "home") {
+
         addScreen("home", setScreenTitle, setHomeScreen, setShowBottomBar, setShowBackButton) {
             setShowBackButton(false)
             setShowBottomBar(true)

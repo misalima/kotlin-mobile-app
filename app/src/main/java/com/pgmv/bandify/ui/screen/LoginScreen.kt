@@ -51,7 +51,6 @@ class AuthenticationViewModel : ViewModel() {
 
 @Composable
 fun LoginScreen(
-    navController: NavHostController,
     authenticationViewModel: AuthenticationViewModel
 ) {
     val email = authenticationViewModel.email
@@ -151,9 +150,7 @@ fun LoginScreen(
         Button(
 
                 onClick = {
-                    if (!emailHasErrors && !passwordHasErrors) {
-                        navController.navigate("home")
-                    }
+
                 }
             ,
             modifier = Modifier
