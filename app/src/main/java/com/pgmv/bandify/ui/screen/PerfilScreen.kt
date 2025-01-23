@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.LockReset
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,10 +34,10 @@ import com.pgmv.bandify.database.DatabaseHelper
 
 
 @Composable
-fun PerfilScreen(databaseHelper: DatabaseHelper, userId: Int) {
+fun PerfilScreen(databaseHelper: DatabaseHelper, ) {
     val userDao = databaseHelper.userDao()
-    val userFlow = userDao.getUserById(userId).collectAsState(initial = null)
-    val user = userFlow.value
+    val users = userDao.getUserById(1).collectAsState(initial = null)
+    val user = users.value
 
     if (user == null) {
         Text(
@@ -98,9 +99,9 @@ fun PerfilScreen(databaseHelper: DatabaseHelper, userId: Int) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                     text = user.phone,
-                     fontSize = 15.sp,
-                     color = MaterialTheme.colorScheme.onSecondary
+                    text = user.phone,
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSecondary
 
                 )
 
@@ -121,106 +122,120 @@ fun PerfilScreen(databaseHelper: DatabaseHelper, userId: Int) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                     text = user.email,
-                     fontSize = 15.sp,
-                     color = MaterialTheme.colorScheme.onSecondary
+                    text = user.email,
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
             }
             Row(
                 modifier = Modifier
-                    .padding(start = 30.dp, top = 60.dp)
+                    .padding(start = 20.dp, top = 60.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Edit,
-                    contentDescription = "Edit Icon",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(30.dp)
-                )
-                Spacer(modifier = Modifier.width(10.dp))
                 TextButton(
-                    onClick = {  },
+                    onClick = {
 
-                ) {
+                    },
+                )
+                {
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
+                        contentDescription = "Edit Icon",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(30.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+
                     Text(
                         text = "Editar Informações",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.primary
-
-                    )
-                }
-
-            }
-
-            Row(
-                modifier = Modifier
-                    .padding(start = 30.dp, top = 10.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.LockReset,
-                    contentDescription = "LockReset Icon",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(30.dp)
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                TextButton(
-                    onClick = {  },
-
-                    ) {
-                    Text(
-                        text = "Alterar Senha",
                         fontSize = 20.sp,
                         color = MaterialTheme.colorScheme.primary
 
                     )
+
                 }
             }
+
             Row(
                 modifier = Modifier
-                    .padding(start = 30.dp, top = 10.dp)
+                    .padding(start = 20.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = "Settings Icon",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(30.dp)
-                )
-                Spacer(modifier = Modifier.width(10.dp))
                 TextButton(
-                    onClick = {  },
+                    onClick = {
 
-                    ) {
-                    Text(
-                        text = "Configurações",
-                        fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.primary
-
+                    },
+                )
+                {
+                    Icon(
+                        imageVector = Icons.Filled.LockReset,
+                        contentDescription = "LockReset Icon",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(30.dp)
                     )
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                        Text(
+                            text = "Alterar Senha",
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.primary
+
+                        )
+
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .padding(start = 20.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(
+                    onClick = {
+
+                    },
+                )
+                {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = "Settings Icon",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(30.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                        Text(
+                            text = "Configurações",
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.primary
+
+                        )
+
                 }
             }
 
             Row(
                 modifier = Modifier
-                    .padding(start = 30.dp, top = 220.dp)
+                    .padding(start = 20.dp, top = 120.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Logout,
-                    contentDescription = "Email Icon",
-                    tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.size(30.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
                 TextButton(
-                    onClick = {  },
+                    onClick = {
 
-                    ) {
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Logout,
+                        contentDescription = "Email Icon",
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(30.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
                     Text(
                         text = "Sair",
                         fontSize = 20.sp,
@@ -229,6 +244,9 @@ fun PerfilScreen(databaseHelper: DatabaseHelper, userId: Int) {
                     )
                 }
             }
+
+
+
         }
     }
 }

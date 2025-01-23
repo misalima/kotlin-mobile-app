@@ -47,14 +47,13 @@ abstract class DatabaseHelper : RoomDatabase() {
                     context.applicationContext,
                     DatabaseHelper::class.java,
                     "bandify.db"
-                ).build().also {
-                    INSTANCE = it
+                ).build()
                 }
             }
         }
     }
 
-}
+
 
 
 
