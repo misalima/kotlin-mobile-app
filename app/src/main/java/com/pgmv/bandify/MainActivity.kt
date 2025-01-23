@@ -29,12 +29,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
+
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val dbHelper = DatabaseHelper.getInstance(applicationContext)
+
         checkAndInsertUser(dbHelper)
         setContent {
             BandifyTheme {

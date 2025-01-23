@@ -112,7 +112,7 @@ fun NavigationHost(
             setShowBottomBar = setShowBottomBar
         ) {
             setShowBackButton(false)
-            PerfilScreen(dbHelper)
+            PerfilScreen( dbHelper)
         }
         addScreen(
             route = "novo_evento",
