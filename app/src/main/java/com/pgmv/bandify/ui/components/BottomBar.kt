@@ -2,7 +2,7 @@ package com.pgmv.bandify.ui.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -86,14 +86,14 @@ fun BottomBar(navController: NavController) {
                         .offset{ IntOffset(0, iconOffset.roundToPx()) }
                 )
 
-               Column(
+               Box(
                    modifier = Modifier
                        .clip(CircleShape)
                        .background(Color.White)
                        .height(if (selectedIndex == index) 6.dp else 0.dp)
                        .size(24.dp)
                        .width(24.dp)
-               ){}
+               )
             }
         }
     }
