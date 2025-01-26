@@ -12,25 +12,29 @@ class NovaMusicaViewModel(dbHelper: DatabaseHelper? = null): ViewModel() {
     private val songDao = dbHelper?.songDao()
 
     var songAdded = mutableStateOf(false)
-    var musicTitle = mutableStateOf("")
-    var bandaName = mutableStateOf("")
+    var songTitle = mutableStateOf("")
+    var artist = mutableStateOf("")
     var selectedTag = mutableStateOf("")
     var selectedTempo = mutableStateOf("")
-    var selectedTom = mutableStateOf("")
+    var selectedKey = mutableStateOf("")
 
     val tagOptions = listOf("Ensaio", "Prontas")
-    val tomOptions = listOf(
+    val keyOptions = listOf(
         "C", "C#", "D", "D#", "E", "F",
         "F#", "G", "G#", "A", "A#", "B",
-        "Db", "Eb", "Gb", "Ab", "Bb"
+        "Cm", "C#m", "Dm", "D#m", "Em", "Fm",
+        "F#m", "Gm", "G#m", "Am", "A#m", "Bm",
+        "Db", "Ebm", "Gb", "Ab", "Bb",
+        "Dbm", "Ebm", "Gbm", "Abm", "Bbm"
     )
 
-    fun updateMusicTitle(value: String) {
-        musicTitle.value = value
+
+    fun updateSongTitle(value: String) {
+        songTitle.value = value
     }
 
-    fun updateBandaName(value: String) {
-        bandaName.value = value
+    fun updateArtist(value: String) {
+        artist.value = value
     }
 
     fun updateSelectedTag(value: String) {
@@ -41,18 +45,18 @@ class NovaMusicaViewModel(dbHelper: DatabaseHelper? = null): ViewModel() {
         selectedTempo.value = value
     }
 
-    fun updateSelectedTom(value: String) {
-        selectedTom.value = value
+    fun updateSelectedKey(value: String) {
+        selectedKey.value = value
     }
 
 
     fun saveSong() {
         val newSong = Song(
-            title = musicTitle.value,
-            artist = bandaName.value,
+            title = songTitle.value,
+            artist = artist.value,
             tag = selectedTag.value,
             tempo = selectedTempo.value.toInt(),
-            key = selectedTom.value,
+            key = selectedKey.value,
             userId = 1L,
             duration = "4:30"
         )

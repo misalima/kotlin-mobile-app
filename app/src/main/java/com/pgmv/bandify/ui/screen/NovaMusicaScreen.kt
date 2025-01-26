@@ -44,18 +44,18 @@ fun NovaMusicaScreen(
 
     val context = LocalContext.current
 
-    val musicTitle = viewModel.musicTitle.value
-    val bandaName = viewModel.bandaName.value
+    val songTitle = viewModel.songTitle.value
+    val artist = viewModel.artist.value
     val selectedTag = viewModel.selectedTag.value
     val selectedTempo = viewModel.selectedTempo.value
-    val selectedTom = viewModel.selectedTom.value
+    val selectedKey = viewModel.selectedKey.value
     val songAdded by viewModel.songAdded
 
-    val validFields = musicTitle.isNotBlank()
-            && bandaName.isNotBlank()
+    val validFields = songTitle.isNotBlank()
+            && artist.isNotBlank()
             && selectedTag.isNotBlank()
             && selectedTempo.isNotBlank()
-            && selectedTom.isNotBlank()
+            && selectedKey.isNotBlank()
 
     Column(
         modifier = Modifier
@@ -64,8 +64,8 @@ fun NovaMusicaScreen(
             .verticalScroll(rememberScrollState())
     ) {
         ValidatedTextField(
-            value = musicTitle,
-            onValueChange = { viewModel.updateMusicTitle(it) },
+            value = songTitle,
+            onValueChange = { viewModel.updateSongTitle(it) },
             label = "Nome da Música",
             modifier = Modifier.padding(top = 12.dp),
             leadingIcon = {
@@ -81,8 +81,8 @@ fun NovaMusicaScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ){
             ValidatedTextField(
-                value = bandaName,
-                onValueChange = { viewModel.updateBandaName(it) },
+                value = artist,
+                onValueChange = { viewModel.updateArtist(it) },
                 label = "Banda/Artista",
                 modifier = Modifier.weight(1f)
             )
@@ -111,9 +111,9 @@ fun NovaMusicaScreen(
 
             DropdownTextField(
                 label = "Tom",
-                options = viewModel.tomOptions,
-                selectedOption = selectedTom,
-                onOptionSelected = { viewModel.updateSelectedTom(it) },
+                options = viewModel.keyOptions,
+                selectedOption = selectedKey,
+                onOptionSelected = { viewModel.updateSelectedKey(it) },
                 modifier = Modifier.weight(1f)
             )
         }
