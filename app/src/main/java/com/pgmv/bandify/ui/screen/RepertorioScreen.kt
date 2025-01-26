@@ -37,9 +37,6 @@ import com.pgmv.bandify.ui.components.SongCard
 import com.pgmv.bandify.ui.theme.BandifyTheme
 import com.pgmv.bandify.viewmodel.RepertorioViewModel
 import com.pgmv.bandify.viewmodel.RepertorioViewModelFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Composable
 fun RepertorioScreen(
@@ -157,9 +154,7 @@ fun RepertorioScreen(
             item = songToDelete?.title?: "",
             onConfirm = {
                 songToDelete?.let { song ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel.deleteSong(song)
-                    }
+                    viewModel.deleteSong(song)
                 }
                 showDialog = false
             },
