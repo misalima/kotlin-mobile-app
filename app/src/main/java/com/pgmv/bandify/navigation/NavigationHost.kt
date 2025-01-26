@@ -12,7 +12,6 @@ import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.pgmv.bandify.database.DatabaseHelper
-import com.pgmv.bandify.navigation.utils.getScreenTitle
 import com.pgmv.bandify.ui.screen.AgendaScreen
 import com.pgmv.bandify.ui.screen.ArquivosScreen
 import com.pgmv.bandify.ui.screen.HomeScreen
@@ -20,6 +19,7 @@ import com.pgmv.bandify.ui.screen.NovaMusicaScreen
 import com.pgmv.bandify.ui.screen.NovoEventoScreen
 import com.pgmv.bandify.ui.screen.PerfilScreen
 import com.pgmv.bandify.ui.screen.RepertorioScreen
+import com.pgmv.bandify.utils.getScreenTitle
 
 @OptIn(ExperimentalAnimationApi::class)
 private fun NavGraphBuilder.addScreen(

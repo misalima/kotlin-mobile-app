@@ -35,6 +35,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val dbHelper = DatabaseHelper.getInstance(applicationContext)
+
         checkAndInsertUser(dbHelper)
         setContent {
             BandifyTheme {
@@ -59,7 +60,14 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        NavigationHost(navController, setScreenTitle, setIsHomeScreen, dbHelper, setShowBackButton, setShowBottomBar)
+                        NavigationHost(
+                            navController,
+                            setScreenTitle,
+                            setIsHomeScreen,
+                            dbHelper,
+                            setShowBackButton,
+                            setShowBottomBar
+                        )
                     }
                 }
             }
