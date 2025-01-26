@@ -2,9 +2,11 @@ package com.pgmv.bandify.ui.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -19,13 +21,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.pgmv.bandify.database.DatabaseHelper
 import com.pgmv.bandify.domain.Song
@@ -33,6 +35,8 @@ import com.pgmv.bandify.ui.components.DeleteConfirmationDialog
 import com.pgmv.bandify.ui.components.FilterRow
 import com.pgmv.bandify.ui.components.SongCard
 import com.pgmv.bandify.ui.theme.BandifyTheme
+import com.pgmv.bandify.viewmodel.RepertorioViewModel
+import com.pgmv.bandify.viewmodel.RepertorioViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,24 +47,22 @@ fun RepertorioScreen(
     navController: NavController,
     eventId: String?
 ) {
-    val songDao = dbHelper?.songDao()
-    val eventDao = dbHelper?.eventDao()
+    val viewModel: RepertorioViewModel = viewModel(
+        factory = RepertorioViewModelFactory(dbHelper)
+    )
 
     var selectedFilter by remember { mutableStateOf(if (eventId != null) "Evento" else "Todas") }
-    var selectedEvent by remember { mutableStateOf<Long?>(eventId?.toLongOrNull()) }
+    var selectedEvent by remember { mutableStateOf(eventId?.toLongOrNull()) }
     var showDialog by remember { mutableStateOf(false) }
     var songToDelete by remember { mutableStateOf<Song?>(null) }
 
     val songsFlow = remember(selectedFilter, selectedEvent) {
-        when (selectedFilter) {
-            "Todas" -> songDao?.getAllSongs() ?: kotlinx.coroutines.flow.flowOf(emptyList())
-            "Evento" -> selectedEvent?.let { eventId ->
-                songDao?.getSongsForEvent(eventId)
-            } ?: kotlinx.coroutines.flow.flowOf(emptyList())
-            else -> songDao?.getSongsByTag(selectedFilter) ?: kotlinx.coroutines.flow.flowOf(emptyList()) }
+        viewModel.getSongsFlow(selectedFilter, selectedEvent)
     }
+
     val songs by songsFlow.collectAsState(initial = emptyList())
-    val eventList = eventDao?.getAllEvents()?.collectAsState(initial = emptyList()) ?: remember { mutableStateOf(emptyList()) }
+
+    val eventList by viewModel.events.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -108,32 +110,35 @@ fun RepertorioScreen(
                         selectedEvent = null
                     }
                 },
-                eventList = eventList.value,
+                eventList = eventList,
                 selectedEvent = selectedEvent?.let {
-                    id -> eventList.value.find {
-                        it.id == id
-                    }
-               },
+                    id -> eventList.find {
+                        it.id == id }
+                },
                 onEventSelected = { event ->
                     selectedEvent = event.id
                 }
             )
 
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
             ) {
                 if (songs.isEmpty()) {
-                    Text(
-                        text = "Nenhuma música encontrada",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Gray,
-                        modifier = Modifier.align(CenterHorizontally)
-                    )
+                    item {
+                        Text(
+                            text = "Nenhuma música encontrada.",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Gray,
+                            modifier = Modifier
+                                .fillParentMaxSize()
+                                .wrapContentSize()
+                                .offset(y = (-80).dp)
+                        )
+                    }
                 } else {
-                    songs.forEach { song ->
+                    items(songs) { song ->
                         SongCard(
                             song = song,
                             onDelete = { selectedSong ->
@@ -153,7 +158,7 @@ fun RepertorioScreen(
             onConfirm = {
                 songToDelete?.let { song ->
                     CoroutineScope(Dispatchers.IO).launch {
-                        songDao?.deleteSong(song)
+                        viewModel.deleteSong(song)
                     }
                 }
                 showDialog = false
@@ -174,7 +179,8 @@ fun RepertorioScreenPreview() {
         RepertorioScreen(
             navController = NavController(
                 context = androidx.compose.ui.platform.LocalContext.current
-            ), eventId = null
+            ),
+            eventId = null
         )
     }
 }

@@ -1,6 +1,5 @@
 package com.pgmv.bandify.ui.screen
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,44 +20,46 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.pgmv.bandify.database.DatabaseHelper
-import com.pgmv.bandify.domain.Song
 import com.pgmv.bandify.ui.components.DropdownTextField
 import com.pgmv.bandify.ui.components.ValidatedTextField
 import com.pgmv.bandify.ui.theme.BandifyTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.pgmv.bandify.viewmodel.NovaMusicaViewModel
+import com.pgmv.bandify.viewmodel.NovaMusicaViewModelFactory
 
 @Composable
 fun NovaMusicaScreen(
     dbHelper: DatabaseHelper? = null,
     navController: NavController? = null
 ) {
+    val viewModel: NovaMusicaViewModel = viewModel(
+        factory = NovaMusicaViewModelFactory(dbHelper)
+    )
+
     val context = LocalContext.current
-    val songDao = dbHelper?.songDao()
-    var songAdded by remember { mutableStateOf(false) }
-    var musicTitle by remember { mutableStateOf("") }
-    var bandaName by remember { mutableStateOf("") }
-    var selectedTag by remember { mutableStateOf("") }
-    var selectedTempo by remember { mutableStateOf("") }
-    var selectedTom by remember { mutableStateOf("") }
-    val tagOptions = listOf("Prontas", "Ensaio")
+    val musicTitle = viewModel.musicTitle.value
+    val bandaName = viewModel.bandaName.value
+    val selectedTag = viewModel.selectedTag.value
+    val selectedTempo = viewModel.selectedTempo.value
+    val selectedTom = viewModel.selectedTom.value
+    val songAdded by viewModel.songAdded
+    val tagOptions = listOf("Ensaio", "Prontas")
     val tomOptions = listOf(
         "C", "C#", "D", "D#", "E", "F",
         "F#", "G", "G#", "A", "A#", "B",
         "Db", "Eb", "Gb", "Ab", "Bb"
     )
-    val validFields = musicTitle.isNotBlank() && bandaName.isNotBlank() && selectedTempo.isNotBlank() &&
-            selectedTom.isNotBlank() && selectedTag.isNotBlank()
+    val validFields = musicTitle.isNotBlank()
+            && bandaName.isNotBlank()
+            && selectedTag.isNotBlank()
+            && selectedTempo.isNotBlank()
+            && selectedTom.isNotBlank()
 
     Column(
         modifier = Modifier
@@ -68,7 +69,7 @@ fun NovaMusicaScreen(
     ) {
         ValidatedTextField(
             value = musicTitle,
-            onValueChange = { musicTitle = it },
+            onValueChange = { viewModel.updateMusicTitle(it) },
             label = "Nome da Música",
             modifier = Modifier.padding(top = 12.dp),
             leadingIcon = {
@@ -85,7 +86,7 @@ fun NovaMusicaScreen(
         ){
             ValidatedTextField(
                 value = bandaName,
-                onValueChange = { bandaName = it },
+                onValueChange = { viewModel.updateBandaName(it) },
                 label = "Banda/Artista",
                 modifier = Modifier.weight(1f)
             )
@@ -94,7 +95,7 @@ fun NovaMusicaScreen(
                 label = "Tag",
                 options = tagOptions,
                 selectedOption = selectedTag,
-                onOptionSelected = { selectedTag = it },
+                onOptionSelected = { viewModel.updateSelectedTag(it) },
                 modifier = Modifier.weight(1f)
             )
         }
@@ -107,7 +108,7 @@ fun NovaMusicaScreen(
         ){
             ValidatedTextField(
                 value = selectedTempo,
-                onValueChange = { selectedTempo = it },
+                onValueChange = { viewModel.updateSelectedTempo(it) },
                 label = "Tempo (bpm)",
                 modifier = Modifier.weight(1f)
             )
@@ -116,7 +117,7 @@ fun NovaMusicaScreen(
                 label = "Tom",
                 options = tomOptions,
                 selectedOption = selectedTom,
-                onOptionSelected = { selectedTom = it },
+                onOptionSelected = { viewModel.updateSelectedTom(it) },
                 modifier = Modifier.weight(1f)
             )
         }
@@ -125,30 +126,9 @@ fun NovaMusicaScreen(
 
         Button(
             onClick = {
-                if (validFields) {
-                    val newSong = Song(
-                        title = musicTitle,
-                        artist = bandaName,
-                        duration = "3:20",
-                        tempo = selectedTempo.toInt(),
-                        key = selectedTom,
-                        tag = selectedTag,
-                        userId = 1
-                    )
-                    CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            Log.d("AddSong", "Inserting song: $newSong")
-                            songDao?.insertSong(newSong)
-                            Log.d("AddSong", "Song added successfully")
-                            songAdded = true
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            Log.e("AddSong", "Error adding song: ${e.message}")
-                        }
-                    }
+                if (validFields){
+                    viewModel.saveSong()
                     navController?.popBackStack()
-                } else {
-                    Log.d("AddSong", "Fields not filled correctly.")
                 }
             },
             modifier = Modifier.fillMaxWidth(),
