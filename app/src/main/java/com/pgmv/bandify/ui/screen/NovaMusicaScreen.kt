@@ -43,18 +43,14 @@ fun NovaMusicaScreen(
     )
 
     val context = LocalContext.current
+
     val musicTitle = viewModel.musicTitle.value
     val bandaName = viewModel.bandaName.value
     val selectedTag = viewModel.selectedTag.value
     val selectedTempo = viewModel.selectedTempo.value
     val selectedTom = viewModel.selectedTom.value
     val songAdded by viewModel.songAdded
-    val tagOptions = listOf("Ensaio", "Prontas")
-    val tomOptions = listOf(
-        "C", "C#", "D", "D#", "E", "F",
-        "F#", "G", "G#", "A", "A#", "B",
-        "Db", "Eb", "Gb", "Ab", "Bb"
-    )
+
     val validFields = musicTitle.isNotBlank()
             && bandaName.isNotBlank()
             && selectedTag.isNotBlank()
@@ -93,7 +89,7 @@ fun NovaMusicaScreen(
 
             DropdownTextField(
                 label = "Tag",
-                options = tagOptions,
+                options = viewModel.tagOptions,
                 selectedOption = selectedTag,
                 onOptionSelected = { viewModel.updateSelectedTag(it) },
                 modifier = Modifier.weight(1f)
@@ -115,7 +111,7 @@ fun NovaMusicaScreen(
 
             DropdownTextField(
                 label = "Tom",
-                options = tomOptions,
+                options = viewModel.tomOptions,
                 selectedOption = selectedTom,
                 onOptionSelected = { viewModel.updateSelectedTom(it) },
                 modifier = Modifier.weight(1f)
