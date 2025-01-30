@@ -4,6 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -12,14 +13,10 @@ import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.pgmv.bandify.database.DatabaseHelper
-import com.pgmv.bandify.ui.screen.AgendaScreen
-import com.pgmv.bandify.ui.screen.ArquivosScreen
-import com.pgmv.bandify.ui.screen.HomeScreen
-import com.pgmv.bandify.ui.screen.NovaMusicaScreen
-import com.pgmv.bandify.ui.screen.NovoEventoScreen
-import com.pgmv.bandify.ui.screen.PerfilScreen
-import com.pgmv.bandify.ui.screen.RepertorioScreen
+import com.pgmv.bandify.ui.screen.*
 import com.pgmv.bandify.utils.getScreenTitle
+
+
 
 @OptIn(ExperimentalAnimationApi::class)
 private fun NavGraphBuilder.addScreen(
@@ -27,7 +24,9 @@ private fun NavGraphBuilder.addScreen(
     arguments: List<NamedNavArgument> = emptyList(),
     setScreenTitle: (String) -> Unit,
     setHomeScreen: (Boolean) -> Unit,
-    setShowBottomBar: (Boolean) -> Unit,
+    setShowBottomBar: (Boolean) -> Unit = {},
+    setShowBackButton: (Boolean) -> Unit = {},
+    setShowTopBar: (Boolean) -> Unit = {},
     content: @Composable (arguments: Map<String, String?>) -> Unit
 ) {
     composable(
@@ -46,7 +45,6 @@ private fun NavGraphBuilder.addScreen(
             } ?: emptyMap()
         setScreenTitle(getScreenTitle(route))
         setHomeScreen(route == "home")
-        setShowBottomBar(true)
         content(argumentsMap)
     }
 }
@@ -59,25 +57,56 @@ fun NavigationHost(
     setHomeScreen: (Boolean) -> Unit,
     dbHelper: DatabaseHelper,
     setShowBackButton: (Boolean) -> Unit,
-    setShowBottomBar: (Boolean) -> Unit
-) {
-    AnimatedNavHost(navController = navController, startDestination = "home") {
+    setShowBottomBar: (Boolean) -> Unit,
+    setShowTopBar: (Boolean) -> Unit,
+
+
+    ) {
+    val userViewModel: UserViewModel = viewModel()
+
+    AnimatedNavHost(navController = navController, startDestination = "login") {
+        composable("login") {
+            LoginScreen(
+                authenticationViewModel = AuthenticationViewModel(dbHelper),
+                userViewModel = userViewModel,
+                navController = navController
+            )
+            setShowBottomBar(false)
+            setShowTopBar(false)
+        }
+        addScreen(
+            route = "register",
+            setScreenTitle = setScreenTitle,
+            setHomeScreen = setHomeScreen,
+            setShowBottomBar = setShowBottomBar,
+            setShowBackButton = setShowBackButton
+        ) {
+            setShowBottomBar(false)
+            setShowTopBar(false)
+            RegisterScreen(navController)
+        }
         addScreen(
             route = "home",
             setScreenTitle = setScreenTitle,
             setHomeScreen = setHomeScreen,
-            setShowBottomBar = setShowBottomBar
+            setShowBottomBar = setShowBottomBar,
+            setShowBackButton = setShowBackButton
         ) {
             setShowBackButton(false)
+            setShowBottomBar(true)
+            setShowTopBar(true)
             HomeScreen(dbHelper, navController)
         }
         addScreen(
             route = "agenda",
             setScreenTitle = setScreenTitle,
             setHomeScreen = setHomeScreen,
-            setShowBottomBar = setShowBottomBar
+            setShowBottomBar = setShowBottomBar,
+            setShowBackButton = setShowBackButton
         ) {
             setShowBackButton(false)
+            setShowBottomBar(true)
+            setShowTopBar(true)
             AgendaScreen(dbHelper, navController)
         }
         addScreen(
@@ -90,39 +119,47 @@ fun NavigationHost(
             ),
             setScreenTitle = setScreenTitle,
             setHomeScreen = setHomeScreen,
-            setShowBottomBar = setShowBottomBar
+            setShowBottomBar = setShowBottomBar,
+            setShowBackButton = setShowBackButton
         ) { arguments ->
             val eventId = arguments["eventId"]
             setShowBackButton(false)
+            setShowBottomBar(true)
+            setShowTopBar(true)
             RepertorioScreen(dbHelper, navController, eventId = eventId)
         }
         addScreen(
             route = "arquivos",
             setScreenTitle = setScreenTitle,
             setHomeScreen = setHomeScreen,
-            setShowBottomBar = setShowBottomBar
+            setShowBottomBar = setShowBottomBar,
+            setShowBackButton = setShowBackButton
         ) {
             setShowBackButton(false)
+            setShowBottomBar(true)
+            setShowTopBar(true)
             ArquivosScreen(dbHelper)
         }
         addScreen(
             route = "perfil",
             setScreenTitle = setScreenTitle,
             setHomeScreen = setHomeScreen,
-            setShowBottomBar = setShowBottomBar
+            setShowBottomBar = setShowBottomBar,
+            setShowBackButton = setShowBackButton
         ) {
-            setShowBackButton(false)
-            PerfilScreen(dbHelper)
+            ProfileScreen(dbHelper, userId = userViewModel.userId,navController)
         }
         addScreen(
             route = "novo_evento",
             setScreenTitle = setScreenTitle,
             setHomeScreen = setHomeScreen,
-            setShowBottomBar = setShowBottomBar
+            setShowBottomBar = setShowBottomBar,
+            setShowBackButton = setShowBackButton
         ) {
-            setShowBottomBar(false)
             setShowBackButton(true)
-            NovoEventoScreen(dbHelper = dbHelper)
+            setShowBottomBar(false)
+            setShowTopBar(true)
+            NovoEventoScreen(dbHelper)
         }
         addScreen(
             route = "nova_musica",
@@ -136,3 +173,4 @@ fun NavigationHost(
         }
     }
 }
+
