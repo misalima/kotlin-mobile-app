@@ -44,7 +44,7 @@ fun ProfileScreen(databaseHelper: DatabaseHelper, userId: Long?,navController: N
             user.value = databaseHelper.userDao().getUserById(userId)
             loading.value = false
         } else {
-            loading.value = false
+            loading.value = true
         }
     }
 

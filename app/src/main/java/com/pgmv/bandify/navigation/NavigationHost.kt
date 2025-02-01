@@ -15,7 +15,8 @@ import com.google.accompanist.navigation.animation.composable
 import com.pgmv.bandify.database.DatabaseHelper
 import com.pgmv.bandify.ui.screen.*
 import com.pgmv.bandify.utils.getScreenTitle
-
+import com.pgmv.bandify.viewmodel.AuthenticationViewModel
+import com.pgmv.bandify.viewmodel.UserViewModel
 
 
 @OptIn(ExperimentalAnimationApi::class)
