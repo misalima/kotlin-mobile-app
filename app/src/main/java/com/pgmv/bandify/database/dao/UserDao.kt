@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.pgmv.bandify.domain.User
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -22,11 +23,13 @@ interface UserDao {
 
 
     @Query("SELECT * FROM users")
-    suspend fun getAllUsers(): List<User>
+    fun getAllUsers(): Flow<List<User>>
 
+    @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
+    suspend fun getUserById(userId: Long?): User?
 
-    @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
-    suspend fun getUserById(id: Long): User?
+    @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
+    suspend fun validateUser(email: String, password: String): User?
 
 
     @Query("SELECT * FROM users WHERE username = :username LIMIT 1")

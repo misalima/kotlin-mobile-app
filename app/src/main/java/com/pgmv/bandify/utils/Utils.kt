@@ -44,6 +44,8 @@ fun formatTimeDifference(createdAt: String): String {
 fun getScreenTitle(route: String): String {
     return when (route) {
         "home" -> "Bandify"
+        "login" -> "Login"
+        "register" -> "Register"
         "agenda" -> "Agenda"
         "repertorio?event_id={eventId}" -> "Repertório"
         "arquivos" -> "Arquivos"

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.pgmv.bandify.database.dao.ActivityHistoryDao
 import com.pgmv.bandify.database.dao.EventDao
@@ -44,7 +43,7 @@ abstract class DatabaseHelper : RoomDatabase() {
                 context,
                 DatabaseHelper::class.java,
                 "bandify.db"
-            ).allowMainThreadQueries()
+            )
                 .build()
         }
     }
