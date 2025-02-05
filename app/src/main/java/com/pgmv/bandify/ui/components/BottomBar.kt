@@ -2,7 +2,7 @@ package com.pgmv.bandify.ui.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -20,10 +20,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -38,7 +35,7 @@ import com.pgmv.bandify.ui.theme.BandifyTheme
 @Composable
 fun BottomBar(navController: NavController) {
 
-    val tabs = listOf("home", "agenda", "repertório", "arquivos", "perfil")
+    val tabs = listOf("home", "agenda", "repertorio", "arquivos", "perfil")
     val icons = listOf(
         Icons.Default.Home,
         Icons.Default.DateRange,
@@ -49,8 +46,11 @@ fun BottomBar(navController: NavController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val selectedIndex = remember(currentRoute) {
-        tabs.indexOf(currentRoute)
+
+    val baseRoute = currentRoute?.substringBefore("?")
+
+    val selectedIndex = remember(baseRoute) {
+        tabs.indexOf(baseRoute)
     }
 
     TabRow(
@@ -66,7 +66,7 @@ fun BottomBar(navController: NavController) {
                 label = "Icon Offset Animation")
 
             Tab(
-                selected = tab == currentRoute,
+                selected = tab == baseRoute,
                 onClick = {
                     navController.navigate(tab){
                         popUpTo(navController.graph.startDestinationId){
@@ -86,14 +86,14 @@ fun BottomBar(navController: NavController) {
                         .offset{ IntOffset(0, iconOffset.roundToPx()) }
                 )
 
-               Column(
+               Box(
                    modifier = Modifier
                        .clip(CircleShape)
                        .background(Color.White)
                        .height(if (selectedIndex == index) 6.dp else 0.dp)
                        .size(24.dp)
                        .width(24.dp)
-               ){}
+               )
             }
         }
     }

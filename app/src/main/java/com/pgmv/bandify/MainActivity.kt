@@ -1,7 +1,6 @@
 package com.pgmv.bandify
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -18,16 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.pgmv.bandify.database.DatabaseHelper
-import com.pgmv.bandify.domain.User
 import com.pgmv.bandify.navigation.NavigationHost
 import com.pgmv.bandify.ui.components.BottomBar
 import com.pgmv.bandify.ui.components.TopBar
 import com.pgmv.bandify.ui.theme.BandifyTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalAnimationApi::class)
@@ -35,7 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val dbHelper = DatabaseHelper.getInstance(applicationContext)
-        checkAndInsertUser(dbHelper)
+
         setContent {
             BandifyTheme {
 
@@ -44,10 +37,17 @@ class MainActivity : ComponentActivity() {
                 val (isHomeScreen, setIsHomeScreen) = remember { mutableStateOf(true) }
                 val (showBackButton, setShowBackButton) = remember { mutableStateOf(false) }
                 val (showBottomBar, setShowBottomBar) = remember { mutableStateOf(true) }
-
+                val (showTopBar, setShowTopBar) = remember { mutableStateOf(true) }
                 Scaffold(
                     topBar = {
-                        TopBar(screenTitle = screenTitle, isHomeScreen = isHomeScreen, showBackButton = showBackButton, navController = navController)
+                        if (showTopBar)
+                            TopBar(
+                                screenTitle = screenTitle,
+                                isHomeScreen = isHomeScreen,
+                                showBackButton = showBackButton,
+                                navController = navController
+                            )
+
                     },
                     bottomBar = {
                         if (showBottomBar) BottomBar(navController = navController)
@@ -59,36 +59,20 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
-                        NavigationHost(navController, setScreenTitle, setIsHomeScreen, dbHelper, setShowBackButton, setShowBottomBar)
+                        NavigationHost(
+                            navController,
+                            setScreenTitle,
+                            setIsHomeScreen,
+                            dbHelper,
+                            setShowBackButton,
+                            setShowBottomBar,
+                            setShowTopBar,
+
+                        )
                     }
                 }
             }
         }
 
-    }
-    private fun checkAndInsertUser(dbHelper: DatabaseHelper) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val user = dbHelper.userDao().getUserById(1)
-            if (user == null) {
-                // User with ID 1 does not exist, insert it
-                val newUser = User(
-                    id = 1, username = "johndoe",
-                    firstName = "John",
-                    surname = "Doe",
-                    email = "johndoe@mail.com",
-                    password = "123456",
-                    phone = "12345678",
-                    createdAt = LocalDate.now().toString()
-                )
-                val rowId = dbHelper.userDao().insertUser(newUser)
-                withContext(Dispatchers.Main) {
-                    if (rowId != -1L) {
-                        Log.d("TestUser", "User inserted with ID: $rowId")
-                    } else {
-                        Log.d("TestUser", "Error inserting user")
-                    }
-                }
-            }
-        }
     }
 }

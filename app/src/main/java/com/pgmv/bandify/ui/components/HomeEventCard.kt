@@ -36,7 +36,8 @@ import java.util.Locale
 
 @Composable
 fun HomeEventCard(
-    event: Event
+    event: Event,
+    onSongsIconClick: () -> Unit = {},
 ) {
     val formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", Locale("pt", "BR"))
     Card(
@@ -45,6 +46,9 @@ fun HomeEventCard(
             .wrapContentHeight(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
         ),
     ) {
         Row (
@@ -112,7 +116,7 @@ fun HomeEventCard(
                 }
             }
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = onSongsIconClick,
                 modifier = Modifier.weight(1F)
             ) {
                 Icon(
